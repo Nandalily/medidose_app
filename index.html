@@ -2,166 +2,793 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0f766e">
-  <meta name="description" content="MEDIDOSE converts prescribed medication doses into administration volume.">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#0f766e"
+  >
+
+  <meta
+    name="description"
+    content="MEDIDOSE converts prescribed medication doses into administration volume."
+  >
+
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="styles.css">
-  <title>MEDIDOSE</title>
+
+  <title>MEDIDOSE — Dose Calculator</title>
 </head>
+
 <body>
+
   <div class="app-shell">
+
+    <!-- =========================
+         HEADER
+    ========================== -->
     <header class="topbar">
+
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">M</div>
+
+        <div class="brand-mark" aria-hidden="true">
+          M
+        </div>
+
         <div>
           <strong>MEDIDOSE</strong>
-          <span>Dose Calc</span>
+          <span>Dose Calculator</span>
         </div>
+
       </div>
-      <button id="installBtn" class="install-btn" type="button" hidden>Install app</button>
+
+      <button
+        id="installBtn"
+        class="install-btn"
+        type="button"
+        hidden
+      >
+        Install app
+      </button>
+
     </header>
 
+
     <main>
-      <section id="inputScreen" class="screen active" aria-labelledby="inputTitle">
+
+      <!-- ==================================================
+           SCREEN 1 — INPUT
+      =================================================== -->
+      <section
+        id="inputScreen"
+        class="screen active"
+        aria-labelledby="inputTitle"
+      >
+
         <div class="hero">
-          <span class="eyebrow">MEDICATION VOLUME CALCULATOR</span>
-          <h1 id="inputTitle">Calculate the volume to administer.</h1>
-      
+
+          <span class="eyebrow">
+            MEDICATION VOLUME CALCULATOR
+          </span>
+<!-- 
+          <h3 id="inputTitle">
+            Calculate the volume to administer.
+          </h3> -->
+
+          <!-- <p>
+            Enter the prescribed dose and the medicine concentration.
+            MEDIDOSE performs the arithmetic only.
+          </p> -->
+
         </div>
 
-        <form id="doseForm" novalidate>
+
+        <form
+          id="doseForm"
+          novalidate
+        >
+
           <div class="card">
+
             <div class="section-heading">
+
               <div>
-                <h2>Dose details</h2>
-                <p>Select how the prescribed dose is expressed.</p>
+                <h2>Prescribed Dose details</h2>
+
+                <!-- <p>
+                  Select how the  dose is expressed.
+                </p> -->
               </div>
+
             </div>
 
+
+            <!-- DOSE TYPE -->
+
             <label class="field">
-              <span class="label-row"><span>Dose type</span><span class="required-tag">Required</span></span>
-              <select id="doseType" name="doseType">
-                <option value="fixed">Fixed dose</option>
-                <option value="weight">Weight-based dose</option>
+
+              <span class="label-row">
+
+                <span>Dose type</span>
+
+                <!-- <span class="required-tag">
+                  Required
+                </span> -->
+
+              </span>
+
+              <select
+                id="doseType"
+                name="doseType"
+              >
+
+                <option value="fixed">
+                  Fixed dose
+                </option>
+
+                <option value="weight">
+                  Weight-based dose
+                </option>
+
               </select>
+
             </label>
+
+
+            <!-- AVAILABLE CONCENTRATION -->
 
             <div class="field">
-              <span class="label-row"><span>Available medicine concentration</span><span class="required-tag">Required</span></span>
+
+              <span class="label-row">
+
+                <span>
+                  Available medicine concentration
+                </span>
+
+                <!-- <span class="required-tag">
+                  Required
+                </span> -->
+
+              </span>
+
+
               <div class="compound-input">
+
                 <div>
-                  <input id="availableMg" name="availableMg" type="number" inputmode="decimal" min="0" step="any" placeholder="125" aria-describedby="availableMgError">
+
+                  <input
+                    id="availableMg"
+                    name="availableMg"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="any"
+                    placeholder="125"
+                    aria-describedby="availableMgError"
+                  >
+
                   <span>mg</span>
+
                 </div>
+
+
                 <b>/</b>
+
+
                 <div>
-                  <input id="availableMl" name="availableMl" type="number" inputmode="decimal" min="0" step="any" placeholder="5" aria-describedby="availableMlError">
+
+                  <input
+                    id="availableMl"
+                    name="availableMl"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="any"
+                    placeholder="5"
+                    aria-describedby="availableMlError"
+                  >
+
                   <span>mL</span>
+
                 </div>
+
               </div>
+
+
               <div class="error-pair">
-                <small id="availableMgError" class="error"></small>
-                <small id="availableMlError" class="error"></small>
+
+                <small
+                  id="availableMgError"
+                  class="error"
+                ></small>
+
+                <small
+                  id="availableMlError"
+                  class="error"
+                ></small>
+
               </div>
-              <small class="hint">Example: 125 mg / 5 mL</small>
+
+
+              <small class="hint">
+                Example: 125 mg / 5 mL
+              </small>
+
             </div>
 
-            <div id="fixedField" class="mode-field">
+
+            <!-- FIXED DOSE -->
+
+            <div
+              id="fixedField"
+              class="mode-field"
+            >
+
               <label class="field">
-                <span class="label-row"><span>Required dose</span><span class="mode-badge">Fixed dose</span></span>
+
+                <span class="label-row">
+
+                  <span>Required dose</span>
+
+                  <span class="mode-badge">
+                    Fixed dose
+                  </span>
+
+                </span>
+
+
                 <div class="unit-input">
-                  <input id="requiredDose" name="requiredDose" type="number" inputmode="decimal" min="0" step="any" placeholder="250" aria-describedby="requiredDoseError">
+
+                  <input
+                    id="requiredDose"
+                    name="requiredDose"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="any"
+                    placeholder="250"
+                    aria-describedby="requiredDoseError"
+                  >
+
                   <span>mg</span>
+
                 </div>
-                <small id="requiredDoseError" class="error"></small>
+
+
+                <small
+                  id="requiredDoseError"
+                  class="error"
+                ></small>
+
               </label>
+
             </div>
 
-            <div id="weightField" class="mode-field de-emphasized">
+
+            <!-- DOSE PER KG -->
+
+            <div
+              id="weightField"
+              class="mode-field de-emphasized"
+            >
+
               <label class="field">
-                <span class="label-row"><span>Dose per kg</span><span class="mode-badge">Weight-based</span></span>
+
+                <span class="label-row">
+
+                  <span>Dose per kg</span>
+
+                  <span class="mode-badge">
+                    Weight-based
+                  </span>
+
+                </span>
+
+
                 <div class="unit-input">
-                  <input id="dosePerKg" name="dosePerKg" type="number" inputmode="decimal" min="0" step="any" placeholder="10" aria-describedby="dosePerKgError">
+
+                  <input
+                    id="dosePerKg"
+                    name="dosePerKg"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="any"
+                    placeholder="10"
+                    aria-describedby="dosePerKgError"
+                  >
+
                   <span>mg/kg</span>
+
                 </div>
-                <small id="dosePerKgError" class="error"></small>
+
+
+                <small
+                  id="dosePerKgError"
+                  class="error"
+                ></small>
+
               </label>
+
             </div>
 
-            <div id="patientWeightField" class="mode-field de-emphasized">
+
+            <!-- PATIENT WEIGHT -->
+
+            <div
+              id="patientWeightField"
+              class="mode-field de-emphasized"
+            >
+
               <label class="field">
-                <span class="label-row"><span>Patient weight</span><span class="mode-badge">Weight-based</span></span>
+
+                <span class="label-row">
+
+                  <span>Patient weight</span>
+
+                  <span class="mode-badge">
+                    Weight-based
+                  </span>
+
+                </span>
+
+
                 <div class="unit-input">
-                  <input id="patientWeight" name="patientWeight" type="number" inputmode="decimal" min="0" step="any" placeholder="20" aria-describedby="patientWeightError">
+
+                  <input
+                    id="patientWeight"
+                    name="patientWeight"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="any"
+                    placeholder="20"
+                    aria-describedby="patientWeightError"
+                  >
+
                   <span>kg</span>
+
                 </div>
-                <small id="patientWeightError" class="error"></small>
+
+
+                <small
+                  id="patientWeightError"
+                  class="error"
+                ></small>
+
               </label>
+
             </div>
+
+
+            <!-- FREQUENCY -->
 
             <label class="field">
-              <span class="label-row"><span>Frequency</span><span class="optional-tag">Optional</span></span>
+
+              <span class="label-row">
+
+                <span>Frequency</span>
+
+                <span class="optional-tag">
+                  Optional
+                </span>
+
+              </span>
+
+
               <div class="unit-input">
-                <input id="frequency" name="frequency" type="number" inputmode="numeric" min="0" step="1" max="24" placeholder="3" aria-describedby="frequencyError">
+
+                <input
+                  id="frequency"
+                  name="frequency"
+                  type="number"
+                  inputmode="numeric"
+                  min="0"
+                  step="1"
+                  max="24"
+                  placeholder="3"
+                  aria-describedby="frequencyError"
+                >
+
                 <span>times/day</span>
+
               </div>
-              <small id="frequencyError" class="error"></small>
-              <small id="frequencyWarning" class="warning"></small>
+
+
+              <small
+                id="frequencyError"
+                class="error"
+              ></small>
+
+
+              <small
+                id="frequencyWarning"
+                class="warning"
+              ></small>
+
             </label>
 
-            <button id="calculateBtn" class="primary-btn" type="submit" disabled>Calculate</button>
+
+            <!-- CALCULATE -->
+
+            <button
+              id="calculateBtn"
+              class="primary-btn"
+              type="submit"
+              disabled
+            >
+              Calculate
+            </button>
+
           </div>
+
         </form>
 
+
+        <!-- SAFETY NOTE -->
+
         <aside class="safety-note">
-          <span class="shield" aria-hidden="true">✓</span>
-          <p><strong>Safety note:</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+
+          <span
+            class="shield"
+            aria-hidden="true"
+          >
+            ✓
+          </span>
+
+          <p>
+
+            <strong>Safety note:</strong>
+
+            MEDIDOSE performs the arithmetic only.
+            Always verify against the prescription and consult
+            a healthcare professional before administering any medication.
+
+          </p>
+
         </aside>
+
       </section>
 
-      <section id="resultScreen" class="screen" aria-labelledby="resultTitle" hidden>
+
+
+      <!-- ==================================================
+           SCREEN 2 — RESULT
+      =================================================== -->
+
+      <section
+        id="resultScreen"
+        class="screen"
+        aria-labelledby="resultTitle"
+        hidden
+      >
+
         <div class="result-hero">
-          <span class="eyebrow">CALCULATION RESULT</span>
-          <h1 id="resultTitle">Dose to administer</h1>
-          <div class="dose-result"><span id="volumeResult">0.00</span><small>mL</small></div>
+
+          <span class="eyebrow">
+            CALCULATION RESULT
+          </span>
+
+          <h1 id="resultTitle">
+            Dose to administer
+          </h1>
+
+
+          <div class="dose-result">
+
+            <span id="volumeResult">
+              0.00
+            </span>
+
+            <small>
+              mL
+            </small>
+
+          </div>
+
+
           <p id="resultSummary"></p>
+
         </div>
 
-        <div id="dailyCard" class="card daily-card" hidden>
-          <span class="card-kicker">TOTAL DAILY VOLUME</span>
-          <strong id="dailyResult">0.00 mL</strong>
-          <span id="dailyFrequency">Frequency: 0 times daily</span>
+
+        <!-- TOTAL DAILY VOLUME -->
+
+        <div
+          id="dailyCard"
+          class="card daily-card"
+          hidden
+        >
+
+          <span class="card-kicker">
+            TOTAL DAILY VOLUME
+          </span>
+
+          <strong id="dailyResult">
+            0.00 mL
+          </strong>
+
+          <span id="dailyFrequency">
+            Frequency: 0 times daily
+          </span>
+
         </div>
+
+
+
+        <!-- CALCULATION BREAKDOWN -->
 
         <div class="card breakdown-card">
+
           <div class="section-heading">
+
             <div>
-              <h2>Calculation breakdown</h2>
-              <p>Review the exact arithmetic used for this result.</p>
+
+              <h2>
+                Calculation breakdown
+              </h2>
+
+              <p>
+                Review the exact arithmetic used for this result.
+              </p>
+
             </div>
+
           </div>
-          <div id="breakdown" class="breakdown"></div>
+
+
+          <div
+            id="breakdown"
+            class="breakdown"
+          ></div>
+
         </div>
 
-        <button id="editBtn" class="secondary-btn" type="button">← Back / Edit</button>
+
+
+        <!-- ==================================================
+             EXPORT DETAILS
+        =================================================== -->
+
+        <div class="card export-card">
+
+          <div class="export-icon">
+            ↓
+          </div>
+
+          <div class="export-content">
+
+            <h2>
+              Export calculation
+            </h2>
+
+            <p>
+              Download all entered values and calculation details
+              as a CSV file.
+            </p>
+
+          </div>
+
+
+          <button
+            id="exportBtn"
+            class="export-btn"
+            type="button"
+          >
+            Export Details
+          </button>
+
+        </div>
+
+
+
+        <!-- BACK / EDIT -->
+
+        <button
+          id="editBtn"
+          class="secondary-btn"
+          type="button"
+        >
+          ← Back / Edit
+        </button>
+
+
+        <!-- SAFETY NOTE -->
 
         <aside class="safety-note">
-          <span class="shield" aria-hidden="true">✓</span>
-          <p><strong>Safety note:</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+
+          <span
+            class="shield"
+            aria-hidden="true"
+          >
+            ✓
+          </span>
+
+          <p>
+
+            <strong>Safety note:</strong>
+
+            MEDIDOSE performs the arithmetic only.
+            Always verify against the prescription and consult
+            a healthcare professional before administering any medication.
+
+          </p>
+
         </aside>
+
       </section>
+
     </main>
 
+
+
+    <!-- FOOTER -->
+
     <footer>
-      <span>MEDIDOSE MVP</span>
-      <span>Arithmetic only • No drug database • No dose suggestions</span>
+
+      <span>
+        MEDIDOSE MVP
+      </span>
+
+      <span>
+        Arithmetic only • No drug database • No dose suggestions
+      </span>
+
     </footer>
+
+  </div>
+
+
+
+  <!-- ==================================================
+       INSTALL BANNER
+  =================================================== -->
+<!-- 
+  <div
+    id="installBanner"
+    class="install-banner"
+    hidden
+  >
+
+    <div>
+
+      <!-- <strong>
+        Install MEDIDOSE
+      </strong>
+
+      <p>
+        Use MEDIDOSE like an app from your home screen.
+      </p>
+
+    </div>
+
+
+    <div class="install-actions">
+
+      <button
+        id="bannerInstallBtn"
+        class="primary-btn compact"
+        type="button"
+      >
+        Install
+      </button> -->
+
+      <!-- <button
+        id="dismissInstallBtn"
+        class="text-btn"
+        type="button"
+      >
+        Not now
+      </button> -->
+
+    </div>
+
+  </div> -->
+
+
+
+  <!-- ==================================================
+       EXPORT CODE MODAL
+  =================================================== -->
+
+  <div
+    id="exportModal"
+    class="modal-overlay"
+    hidden
+  >
+
+    <div
+      class="export-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="exportModalTitle"
+    >
+
+      <button
+        id="closeExportModal"
+        class="modal-close"
+        type="button"
+        aria-label="Close export dialog"
+      >
+        ×
+      </button>
+
+
+      <div class="modal-icon">
+        ↓
+      </div>
+
+
+      <span class="eyebrow">
+        EXPORT DETAILS
+      </span>
+
+
+      <h2 id="exportModalTitle">
+        Enter export code
+      </h2>
+
+
+      <p>
+        Enter the export code to download the current
+        MEDIDOSE calculation as a CSV file.
+      </p>
+
+
+      <label
+        class="modal-field"
+        for="exportCode"
+      >
+        Export code
+
+        <input
+          id="exportCode"
+          type="password"
+          inputmode="text"
+          autocomplete="off"
+          placeholder="Enter code"
+        >
+
+      </label>
+
+
+      <small
+        id="exportCodeError"
+        class="modal-error"
+      ></small>
+
+
+      <div class="modal-actions">
+
+        <button
+          id="cancelExportBtn"
+          class="secondary-modal-btn"
+          type="button"
+        >
+          Cancel
+        </button>
+
+        <button
+          id="confirmExportBtn"
+          class="primary-modal-btn"
+          type="button"
+        >
+          Download CSV
+        </button>
+
+      </div>
+
+    </div>
+
   </div>
 
 
 
   <script src="app.js"></script>
+
 </body>
 </html>
