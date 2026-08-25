@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="description" content="MEDIDOSE converts prescribed medication doses into administration volume.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>MEDIDOSE — Dose Calculator</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">M</div>
+        <div>
+          <strong>MEDIDOSE</strong>
+          <span>Dose Calculator</span>
+        </div>
+      </div>
+      <button id="installBtn" class="install-btn" type="button" hidden>Install app</button>
+    </header>
+
+    <main>
+      <section id="inputScreen" class="screen active" aria-labelledby="inputTitle">
+        <div class="hero">
+          <span class="eyebrow">MEDICATION VOLUME CALCULATOR</span>
+          <h1 id="inputTitle">Calculate the volume to administer.</h1>
+          <p>Enter the prescribed dose and the medicine concentration. MEDIDOSE performs the arithmetic only.</p>
+        </div>
+
+        <form id="doseForm" novalidate>
+          <div class="card">
+            <div class="section-heading">
+              <div>
+                <h2>Dose details</h2>
+                <p>Select how the prescribed dose is expressed.</p>
+              </div>
+            </div>
+
+            <label class="field">
+              <span class="label-row"><span>Dose type</span><span class="required-tag">Required</span></span>
+              <select id="doseType" name="doseType">
+                <option value="fixed">Fixed dose</option>
+                <option value="weight">Weight-based dose</option>
+              </select>
+            </label>
+
+            <div class="field">
+              <span class="label-row"><span>Available medicine concentration</span><span class="required-tag">Required</span></span>
+              <div class="compound-input">
+                <div>
+                  <input id="availableMg" name="availableMg" type="number" inputmode="decimal" min="0" step="any" placeholder="125" aria-describedby="availableMgError">
+                  <span>mg</span>
+                </div>
+                <b>/</b>
+                <div>
+                  <input id="availableMl" name="availableMl" type="number" inputmode="decimal" min="0" step="any" placeholder="5" aria-describedby="availableMlError">
+                  <span>mL</span>
+                </div>
+              </div>
+              <div class="error-pair">
+                <small id="availableMgError" class="error"></small>
+                <small id="availableMlError" class="error"></small>
+              </div>
+              <small class="hint">Example: 125 mg / 5 mL</small>
+            </div>
+
+            <div id="fixedField" class="mode-field">
+              <label class="field">
+                <span class="label-row"><span>Required dose</span><span class="mode-badge">Fixed dose</span></span>
+                <div class="unit-input">
+                  <input id="requiredDose" name="requiredDose" type="number" inputmode="decimal" min="0" step="any" placeholder="250" aria-describedby="requiredDoseError">
+                  <span>mg</span>
+                </div>
+                <small id="requiredDoseError" class="error"></small>
+              </label>
+            </div>
+
+            <div id="weightField" class="mode-field de-emphasized">
+              <label class="field">
+                <span class="label-row"><span>Dose per kg</span><span class="mode-badge">Weight-based</span></span>
+                <div class="unit-input">
+                  <input id="dosePerKg" name="dosePerKg" type="number" inputmode="decimal" min="0" step="any" placeholder="10" aria-describedby="dosePerKgError">
+                  <span>mg/kg</span>
+                </div>
+                <small id="dosePerKgError" class="error"></small>
+              </label>
+            </div>
+
+            <div id="patientWeightField" class="mode-field de-emphasized">
+              <label class="field">
+                <span class="label-row"><span>Patient weight</span><span class="mode-badge">Weight-based</span></span>
+                <div class="unit-input">
+                  <input id="patientWeight" name="patientWeight" type="number" inputmode="decimal" min="0" step="any" placeholder="20" aria-describedby="patientWeightError">
+                  <span>kg</span>
+                </div>
+                <small id="patientWeightError" class="error"></small>
+              </label>
+            </div>
+
+            <label class="field">
+              <span class="label-row"><span>Frequency</span><span class="optional-tag">Optional</span></span>
+              <div class="unit-input">
+                <input id="frequency" name="frequency" type="number" inputmode="numeric" min="0" step="1" max="24" placeholder="3" aria-describedby="frequencyError">
+                <span>times/day</span>
+              </div>
+              <small id="frequencyError" class="error"></small>
+              <small id="frequencyWarning" class="warning"></small>
+            </label>
+
+            <button id="calculateBtn" class="primary-btn" type="submit" disabled>Calculate</button>
+          </div>
+        </form>
+
+        <aside class="safety-note">
+          <span class="shield" aria-hidden="true">✓</span>
+          <p><strong>Safety note:</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+        </aside>
+      </section>
+
+      <section id="resultScreen" class="screen" aria-labelledby="resultTitle" hidden>
+        <div class="result-hero">
+          <span class="eyebrow">CALCULATION RESULT</span>
+          <h1 id="resultTitle">Dose to administer</h1>
+          <div class="dose-result"><span id="volumeResult">0.00</span><small>mL</small></div>
+          <p id="resultSummary"></p>
+        </div>
+
+        <div id="dailyCard" class="card daily-card" hidden>
+          <span class="card-kicker">TOTAL DAILY VOLUME</span>
+          <strong id="dailyResult">0.00 mL</strong>
+          <span id="dailyFrequency">Frequency: 0 times daily</span>
+        </div>
+
+        <div class="card breakdown-card">
+          <div class="section-heading">
+            <div>
+              <h2>Calculation breakdown</h2>
+              <p>Review the exact arithmetic used for this result.</p>
+            </div>
+          </div>
+          <div id="breakdown" class="breakdown"></div>
+        </div>
+
+        <button id="editBtn" class="secondary-btn" type="button">← Back / Edit</button>
+
+        <aside class="safety-note">
+          <span class="shield" aria-hidden="true">✓</span>
+          <p><strong>Safety note:</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+        </aside>
+      </section>
+    </main>
+
+    <footer>
+      <span>MEDIDOSE MVP</span>
+      <span>Arithmetic only • No drug database • No dose suggestions</span>
+    </footer>
+  </div>
+
+  <div id="installBanner" class="install-banner" hidden>
+    <div>
+      <strong>Install MEDIDOSE</strong>
+      <p>Use MEDIDOSE like an app from your home screen.</p>
+    </div>
+    <div class="install-actions">
+      <button id="bannerInstallBtn" class="primary-btn compact" type="button">Install</button>
+      <button id="dismissInstallBtn" class="text-btn" type="button">Not now</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
