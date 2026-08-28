@@ -1,18 +1,11 @@
 {
-  "name": "MEDIDOSE — Dose Calculator",
-  "short_name": "MEDIDOSE",
-  "description": "A focused medication dose-to-volume calculator.",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f4f8f7",
-  "theme_color": "#0f766e",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+    "name": "MEDIDOSE — Dose Calculator",
+    "short_name": "MEDIDOSE",
+    "description": "A simple dose-to-volume calculator.",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#f4f7f8",
+    "theme_color": "#0f766e",
+    "orientation": "portrait-primary",
+    "icons": []
 }

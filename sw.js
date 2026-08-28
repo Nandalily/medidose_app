@@ -1,41 +1,102 @@
-const CACHE_NAME = "medidose-v1";
-const ASSETS = [
-  "./",
-  "./index.html",
-  "./styles.css",
-  "./app.js",
-  "./manifest.json",
-  "./icon.svg"
+const CACHE_NAME = "medidose-development-v1";
+
+const FILES = [
+    "./",
+    "./index.html",
+    "./styles.css",
+    "./app.js",
+    "./manifest.json"
 ];
 
-self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS))
-      .then(() => self.skipWaiting())
-  );
-});
 
-self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      )
-    ).then(() => self.clients.claim())
-  );
-});
+self.addEventListener(
+    "install",
+    event => {
 
-self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
+        self.skipWaiting();
 
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      return cached || fetch(event.request).then(response => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-        return response;
-      }).catch(() => caches.match("./index.html"));
-    })
-  );
-});
+        event.waitUntil(
+
+            caches.open(CACHE_NAME)
+                .then(cache => {
+
+                    return cache.addAll(FILES);
+
+                })
+
+        );
+
+    }
+);
+
+
+self.addEventListener(
+    "activate",
+    event => {
+
+        event.waitUntil(
+
+            caches.keys()
+                .then(keys => {
+
+                    return Promise.all(
+
+                        keys.map(key => {
+
+                            if (
+                                key !== CACHE_NAME
+                            ) {
+
+                                return caches.delete(
+                                    key
+                                );
+
+                            }
+
+                        })
+
+                    );
+
+                })
+
+        );
+
+        self.clients.claim();
+
+    }
+);
+
+
+/*
+   Development approach:
+
+   Always try the network first.
+
+   This means changes to your HTML/CSS/JS
+   are picked up much more easily.
+*/
+
+self.addEventListener(
+    "fetch",
+    event => {
+
+        event.respondWith(
+
+            fetch(event.request)
+                .then(response => {
+
+                    return response;
+
+                })
+                .catch(() => {
+
+                    return caches.match(
+                        event.request
+                    );
+
+                })
+
+        );
+
+    }
+);
