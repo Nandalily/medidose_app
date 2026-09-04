@@ -1,786 +1,1338 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#0e6b5c">
+    <meta name="description" content="MEDIDOSE converts a prescribed medication dose into the volume to draw up and administer.">
+    <title>MEDIDOSE — Dose Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
 
-  <meta
-    name="theme-color"
-    content="#0f766e"
-  >
+        :root {
+            --ink: #1c3128;
+            --muted: #5d776b;
+            --faint: #7eaf91;
 
-  <meta
-    name="description"
-    content="MEDIDOSE converts prescribed medication doses into administration volume."
-  >
+            --teal: #0e6b5c;
+            --teal-deep: #0a4a40;
+            --teal-soft: #e5f1ec;
+            --teal-glow: rgba(14, 107, 92, .12);
 
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css">
+            --gold: #a97a26;
+            --gold-soft: #f6ecd8;
 
-  <title>MEDIDOSE — Dose Calculator</title>
+            --maroon: #307d7d;
+
+            --surface: #ffffff;
+            --paper: #f5f4ee;
+            --paper-light: #faf9f5;
+
+            --danger: #a8352a;
+            --danger-soft: #faeae7;
+            --warning: #8a5f0c;
+            --warning-soft: #fbf1dc;
+
+            --radius-s: 12px;
+            --radius-m: 18px;
+            --radius-l: 24px;
+            --shadow-sm: 0 2px 8px rgba(14, 26, 22, .06);
+            --shadow-md: 0 6px 24px rgba(14, 26, 22, .08);
+            --shadow-lg: 0 16px 48px rgba(14, 26, 22, .12);
+            --shadow-xl: 0 24px 64px rgba(14, 26, 22, .18);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+            color: var(--ink);
+            background: var(--paper);
+            -webkit-font-smoothing: antialiased;
+            padding: 0;
+            margin: 0;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+        :focus-visible {
+            outline: 2px solid var(--teal);
+            outline-offset: 2px;
+        }
+
+        .app-shell {
+            width: min(100%, 640px);
+            margin: 0 auto;
+            padding: 0 16px 32px;
+        }
+
+        /* ─── HEADER ─── */
+
+        .topbar {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 0 12px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: var(--shadow-sm);
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+        }
+        .brand-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 3px;
+        }
+
+        .brand-text {
+            line-height: 1.1;
+        }
+        .brand-text strong {
+            display: block;
+            font-family: 'IBM Plex Serif', serif;
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: .01em;
+            color: var(--ink);
+        }
+        .brand-text span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 1px;
+        }
+
+        .provider-tag {
+            font-size: 10px;
+            color: var(--muted);
+            background: var(--paper-light);
+            padding: 5px 12px;
+            border-radius: 999px;
+            white-space: nowrap;
+            font-weight: 500;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .04);
+        }
+
+        /* ─── SCREENS ─── */
+
+        .screen {
+            animation: fadeUp .3s ease;
+        }
+        .screen[hidden] {
+            display: none;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* ─── HERO ─── */
+
+        .hero {
+            padding: 20px 0 18px;
+        }
+
+        .hero h1 {
+            font-family: 'IBM Plex Serif', serif;
+            font-weight: 600;
+            font-size: clamp(26px, 6vw, 34px);
+            line-height: 1.15;
+            letter-spacing: -.01em;
+            margin: 0 0 8px;
+            max-width: 24ch;
+        }
+
+        .hero p {
+            color: var(--muted);
+            line-height: 1.6;
+            margin: 0;
+            max-width: 44ch;
+            font-size: 14px;
+        }
+
+        /* ─── CARDS ─── */
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-l);
+            padding: 22px 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow .2s;
+        }
+        .card:focus-within {
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-heading {
+            margin-bottom: 20px;
+        }
+        .section-heading h2 {
+            font-family: 'IBM Plex Serif', serif;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 0 0 3px;
+        }
+        .section-heading p {
+            color: var(--muted);
+            font-size: 12.5px;
+            margin: 0;
+        }
+
+        /* ─── SEGMENTED CONTROL ─── */
+
+        .segmented {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+            background: var(--paper);
+            border-radius: var(--radius-m);
+            padding: 4px;
+            margin-bottom: 22px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .04);
+        }
+        .segmented button {
+            border: 0;
+            background: transparent;
+            border-radius: 12px;
+            padding: 12px 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--muted);
+            transition: background .2s, color .2s, box-shadow .2s, transform .1s;
+            position: relative;
+        }
+        .segmented button:active {
+            transform: scale(.97);
+        }
+        .segmented button.active {
+            background: var(--surface);
+            color: var(--teal-deep);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* ─── FIELDS ─── */
+
+        .field {
+            display: block;
+            margin: 0 0 18px;
+        }
+        .field:last-child {
+            margin-bottom: 0;
+        }
+
+        .label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .required-tag,
+        .optional-tag {
+            border-radius: 999px;
+            padding: 2px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: .02em;
+        }
+        .required-tag {
+            color: var(--teal-deep);
+            background: var(--teal-soft);
+        }
+        .optional-tag {
+            color: var(--muted);
+            background: #eef1ef;
+        }
+
+        input,
+        select {
+            width: 100%;
+            height: 50px;
+            border: none;
+            border-radius: var(--radius-s);
+            background: var(--paper-light);
+            color: var(--ink);
+            outline: none;
+            padding: 0 14px;
+            font-size: 15px;
+            transition: background .15s, box-shadow .15s, transform .1s;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .04);
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        input:focus {
+            background: var(--surface);
+            box-shadow: 0 0 0 3px var(--teal-glow), inset 0 1px 3px rgba(0, 0, 0, .04);
+        }
+        input::placeholder {
+            color: var(--faint);
+            font-weight: 400;
+        }
+        input.invalid {
+            background: var(--danger-soft);
+            box-shadow: inset 0 0 0 2px var(--danger);
+        }
+
+        .compound-input {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 8px;
+        }
+        .compound-input>div,
+        .unit-input {
+            position: relative;
+        }
+        .compound-input input,
+        .unit-input input {
+            padding-right: 52px;
+            font-variant-numeric: tabular-nums;
+        }
+        .compound-input span,
+        .unit-input span {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            pointer-events: none;
+            opacity: .7;
+        }
+        .compound-input b {
+            color: var(--faint);
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .hint {
+            color: var(--muted);
+            font-size: 11.5px;
+            margin-top: 6px;
+            display: block;
+        }
+        .error {
+            color: var(--danger);
+            font-size: 11.5px;
+            min-height: 16px;
+            display: block;
+            margin-top: 4px;
+        }
+        .error-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .warning {
+            display: block;
+            color: var(--warning);
+            background: var(--warning-soft);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 12px;
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .mode-field {
+            transition: opacity .2s, transform .2s;
+        }
+        .mode-field[hidden] {
+            display: none;
+        }
+
+        /* ─── BUTTONS ─── */
+
+        .primary-btn,
+        .secondary-btn {
+            width: 100%;
+            border: 0;
+            border-radius: 14px;
+            min-height: 54px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: background .2s, box-shadow .2s, transform .1s;
+        }
+        .primary-btn:active,
+        .secondary-btn:active {
+            transform: scale(.98);
+        }
+
+        .primary-btn {
+            color: #fff;
+            background: var(--teal);
+            box-shadow: 0 4px 16px rgba(14, 107, 92, .28);
+            margin-top: 4px;
+        }
+        .primary-btn:hover:not(:disabled) {
+            background: var(--teal-deep);
+            box-shadow: 0 6px 24px rgba(14, 107, 92, .35);
+        }
+        .primary-btn:disabled {
+            background: #c9d3ce;
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #8b968f;
+        }
+
+        .secondary-btn {
+            background: var(--surface);
+            color: var(--teal-deep);
+            box-shadow: var(--shadow-sm);
+            margin: 12px 0 4px;
+        }
+        .secondary-btn:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ─── SAFETY NOTE ─── */
+
+        .safety-note {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.55;
+            padding: 16px 4px 4px;
+            margin-top: 6px;
+        }
+        .safety-note p {
+            margin: 0;
+        }
+        .safety-note strong {
+            color: var(--ink);
+        }
+        .shield {
+            flex: 0 0 auto;
+            width: 22px;
+            height: 22px;
+            margin-top: 1px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: var(--teal-soft);
+            color: var(--teal-deep);
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        /* ─── RESULT SCREEN ─── */
+
+        .result-hero {
+            text-align: center;
+            padding: 24px 4px 18px;
+        }
+        .result-hero h1 {
+            font-family: 'IBM Plex Serif', serif;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 0 0 14px;
+        }
+
+        .dose-result {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 6px;
+            color: var(--teal-deep);
+            font-family: 'IBM Plex Mono', ui-monospace, monospace;
+            font-size: clamp(48px, 14vw, 72px);
+            font-weight: 600;
+            letter-spacing: -.02em;
+            line-height: 1;
+        }
+        .dose-result small {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 18px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .result-hero p {
+            margin: 14px auto 0;
+            color: var(--muted);
+            max-width: 36ch;
+            font-size: 13.5px;
+            line-height: 1.6;
+        }
+
+        .daily-card {
+            background: var(--teal-deep);
+            color: #fff;
+            border-radius: var(--radius-l);
+            padding: 20px 22px;
+            box-shadow: 0 4px 20px rgba(10, 74, 64, .25);
+        }
+        .card-kicker {
+            color: #bfe3da;
+            font-size: 10px;
+            letter-spacing: .06em;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .daily-card strong {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 28px;
+            letter-spacing: -.01em;
+            display: block;
+            margin: 2px 0 2px;
+        }
+        .daily-card span:last-child {
+            opacity: .82;
+            font-size: 12px;
+        }
+
+        .breakdown {
+            display: grid;
+            gap: 12px;
+        }
+        .formula {
+            padding: 16px 18px;
+            background: var(--paper-light);
+            border-radius: var(--radius-s);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 12.5px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+            color: var(--ink);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .04);
+        }
+        .formula-label {
+            display: block;
+            color: var(--muted);
+            font: 600 10px/1.2 'IBM Plex Sans', sans-serif;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .export-card {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 14px;
+            align-items: center;
+            background: var(--paper-light);
+            box-shadow: var(--shadow-sm);
+            border-radius: var(--radius-l);
+            padding: 18px 20px;
+            transition: box-shadow .2s;
+        }
+        .export-card:active {
+            transform: scale(.99);
+        }
+        .export-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: var(--gold-soft);
+            color: var(--gold);
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .export-content h2 {
+            margin: 0 0 2px;
+            font-size: 15px;
+        }
+        .export-content p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .export-btn {
+            grid-column: 1/-1;
+            width: 100%;
+            min-height: 48px;
+            border-radius: 12px;
+            background: var(--surface);
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: var(--shadow-sm);
+            transition: background .2s, color .2s, box-shadow .2s;
+        }
+        .export-btn:active {
+            transform: scale(.98);
+        }
+        .export-btn:hover {
+            background: var(--gold);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(169, 122, 38, .25);
+        }
+
+        /* ─── FOOTER ─── */
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 4px 4px;
+            color: var(--faint);
+            font-size: 10.5px;
+            margin-top: 8px;
+        }
+        footer strong {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* ─── MODAL ─── */
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            background: rgba(14, 26, 22, .5);
+            backdrop-filter: blur(6px);
+            animation: modalFade .18s ease;
+        }
+        .modal-overlay[hidden] {
+            display: none;
+        }
+        @keyframes modalFade {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .export-modal {
+            position: relative;
+            width: min(100%, 400px);
+            background: #fff;
+            border-radius: var(--radius-l);
+            padding: 28px 24px 24px;
+            box-shadow: var(--shadow-xl);
+            animation: modalUp .2s ease;
+        }
+        @keyframes modalUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(.98);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--paper-light);
+            color: var(--muted);
+            font-size: 20px;
+            line-height: 1;
+            transition: background .15s;
+            display: grid;
+            place-items: center;
+        }
+        .modal-close:hover {
+            background: var(--paper);
+        }
+
+        .modal-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: var(--gold-soft);
+            color: var(--gold);
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .export-modal h2 {
+            font-family: 'IBM Plex Serif', serif;
+            font-weight: 600;
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
+        .export-modal>p {
+            margin: 0 0 20px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .modal-field {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .modal-field input {
+            margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            font-weight: 500;
+            background: var(--paper-light);
+            border-radius: var(--radius-s);
+            height: 48px;
+            padding: 0 14px;
+            width: 100%;
+            border: none;
+            box-shadow: inset 0 1px 3px rgba(11, 82, 2, 0.04);
+            transition: background .15s, box-shadow .15s;
+        }
+        .modal-field input:focus {
+            background: var(--surface);
+            box-shadow: 0 0 0 3px var(--teal-glow), inset 0 1px 3px rgba(0, 0, 0, .04);
+        }
+        .modal-error {
+            min-height: 18px;
+            display: block;
+            color: var(--danger);
+            font-size: 11.5px;
+            margin: 4px 0 6px;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .secondary-modal-btn,
+        .primary-modal-btn {
+            min-height: 48px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background .2s, box-shadow .2s, transform .1s;
+        }
+        .secondary-modal-btn:active,
+        .primary-modal-btn:active {
+            transform: scale(.98);
+        }
+        .secondary-modal-btn {
+            background: var(--paper-light);
+            color: var(--teal-deep);
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .06);
+        }
+        .secondary-modal-btn:hover {
+            background: var(--paper);
+        }
+        .primary-modal-btn {
+            background: var(--gold);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(30, 110, 27, 0.25);
+        }
+        .primary-modal-btn:hover {
+            background: #027c68;
+            box-shadow: 0 6px 24px rgba(31, 138, 31, 0.35);
+        }
+
+        /* ─── RESPONSIVE ─── */
+
+        @media (max-width: 560px) {
+            .app-shell {
+                padding: 0 12px 24px;
+            }
+            .card {
+                padding: 18px 16px;
+                border-radius: 20px;
+            }
+            .export-modal {
+                padding: 24px 18px 20px;
+            }
+            footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            .brand-text strong {
+                font-size: 16px;
+            }
+            .brand-mark {
+                width: 36px;
+                height: 36px;
+            }
+            .compound-input {
+                gap: 6px;
+            }
+            .compound-input input,
+            .unit-input input {
+                padding-right: 44px;
+                height: 46px;
+                font-size: 14px;
+            }
+            .modal-actions {
+                grid-template-columns: 1fr;
+            }
+            .segmented button {
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .topbar {
+                flex-wrap: wrap;
+                min-height: 60px;
+            }
+            .provider-tag {
+                font-size: 9px;
+                padding: 3px 10px;
+            }
+            .hero h1 {
+                font-size: 22px;
+            }
+            .dose-result {
+                font-size: 40px;
+            }
+            .dose-result small {
+                font-size: 15px;
+            }
+        }
+
+        /* ─── UTILITIES ─── */
+
+        .mt-1 {
+            margin-top: 4px;
+        }
+        .mb-1 {
+            margin-bottom: 4px;
+        }
+        .gap-1 {
+            gap: 4px;
+        }
+    </style>
 </head>
-
 <body>
 
-  <div class="app-shell">
+    <div class="app-shell">
 
-    <!-- =========================
-         HEADER
-    ========================== -->
-    <header class="topbar">
-
-      <div class="brand">
-
-        <div class="brand-mark" aria-hidden="true">
-          M
-        </div>
-
-        <div>
-          <strong>MEDIDOSE</strong>
-          <span>Dose Calculator</span>
-        </div>
-
-      </div>
-
-      <button
-        id="installBtn"
-        class="install-btn"
-        type="button"
-        hidden
-      >
-        Install app
-      </button>
-
-    </header>
-
-
-    <main>
-
-      <!-- ==================================================
-           SCREEN 1 — INPUT
-      =================================================== -->
-      <section
-        id="inputScreen"
-        class="screen active"
-        aria-labelledby="inputTitle"
-      >
-
-        <div class="hero">
-
-          <span class="eyebrow">
-            MEDICATION VOLUME CALCULATOR
-          </span>
-
-          <h1 id="inputTitle">
-             volume to administer.
-          </h1>
-
-          <!-- <p>
-            Enter the prescribed dose and the medicine concentration.
-            MEDIDOSE performs the arithmetic only.
-          </p> -->
-
-        </div>
-
-
-        <form
-          id="doseForm"
-          novalidate
-        >
-
-          <div class="card">
-
-            <div class="section-heading">
-
-              <div>
-                <h2>Dose details</h2>
-
-                <p>
-                  Select how the prescribed dose is expressed.
-                </p>
-              </div>
-
+        <!-- ═══ HEADER ═══ -->
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand-mark" aria-hidden="true">
+                    <img src="data:image/jpeg;base64,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" alt="">
+                </div>
+                <div class="brand-text">
+                    <strong>MEDIDOSE</strong>
+                    <span>Dose &amp; volume calculator</span>
+                </div>
             </div>
+            <span class="provider-tag">MUPSA member tool</span>
+        </header>
 
+        <main>
 
-            <!-- DOSE TYPE -->
+            <!-- ═══ SCREEN 1 — INPUT ═══ -->
+            <section id="inputScreen" class="screen" aria-labelledby="inputTitle">
 
-            <label class="field">
-
-              <span class="label-row">
-
-                <span>Dose type</span>
-
-                <span class="required-tag">
-                  Required
-                </span>
-
-              </span>
-
-              <select
-                id="doseType"
-                name="doseType"
-              >
-
-                <option value="fixed">
-                  Fixed dose
-                </option>
-
-                <option value="weight">
-                  Weight-based dose
-                </option>
-
-              </select>
-
-            </label>
-
-
-            <!-- AVAILABLE CONCENTRATION -->
-
-            <div class="field">
-
-              <span class="label-row">
-
-                <span>
-                  Available medicine concentration
-                </span>
-
-                <span class="required-tag">
-                  Required
-                </span>
-
-              </span>
-
-
-              <div class="compound-input">
-
-                <div>
-
-                  <input
-                    id="availableMg"
-                    name="availableMg"
-                    type="number"
-                    inputmode="decimal"
-                    min="0"
-                    step="any"
-                    placeholder="125"
-                    aria-describedby="availableMgError"
-                  >
-
-                  <span>mg</span>
-
+                <div class="hero">
+                    <h2 id="inputTitle">Calculate the volume to administer.</h2>
+                    <!-- <p>Enter the prescribed dose and the medicine's concentration. MEDIDOSE performs the arithmetic only — it does not suggest or verify doses.</p> -->
                 </div>
 
+                <form id="doseForm" novalidate>
+                    <div class="card">
 
-                <b>/</b>
+                        <div class="section-heading">
+                            <h2>Dose details</h2>
+                            <p>Choose the prescribed dose type.</p>
+                        </div>
 
+                        <div class="segmented" role="tablist" aria-label="Dose type">
+                            <button type="button" id="tabFixed" class="active" role="tab" aria-selected="true">Fixed dose</button>
+                            <button type="button" id="tabWeight" role="tab" aria-selected="false">Weight-based</button>
+                        </div>
+                        <input type="hidden" id="doseType" value="fixed">
 
-                <div>
+                        <div class="field">
+                            <span class="label-row">
+                                <span>Available concentration</span>
+                                <span class="required-tag">Required</span>
+                            </span>
+                            <div class="compound-input">
+                                <div>
+                                    <input id="availableMg" type="number" inputmode="decimal" min="0" step="any" placeholder="125" aria-describedby="availableMgError">
+                                    <span>mg</span>
+                                </div>
+                                <b>/</b>
+                                <div>
+                                    <input id="availableMl" type="number" inputmode="decimal" min="0" step="any" placeholder="5" aria-describedby="availableMlError">
+                                    <span>mL</span>
+                                </div>
+                            </div>
+                            <div class="error-pair">
+                                <small id="availableMgError" class="error"></small>
+                                <small id="availableMlError" class="error"></small>
+                            </div>
+                            <small class="hint">Example: 125 mg per 5 mL</small>
+                        </div>
 
-                  <input
-                    id="availableMl"
-                    name="availableMl"
-                    type="number"
-                    inputmode="decimal"
-                    min="0"
-                    step="any"
-                    placeholder="5"
-                    aria-describedby="availableMlError"
-                  >
+                        <div id="fixedField" class="mode-field">
+                            <label class="field">
+                                <span class="label-row"><span>Required dose</span></span>
+                                <div class="unit-input">
+                                    <input id="requiredDose" type="number" inputmode="decimal" min="0" step="any" placeholder="250" aria-describedby="requiredDoseError">
+                                    <span>mg</span>
+                                </div>
+                                <small id="requiredDoseError" class="error"></small>
+                            </label>
+                        </div>
 
-                  <span>mL</span>
+                        <div id="weightField" class="mode-field" hidden>
+                            <label class="field">
+                                <span class="label-row"><span>Dose per kg</span></span>
+                                <div class="unit-input">
+                                    <input id="dosePerKg" type="number" inputmode="decimal" min="0" step="any" placeholder="10" aria-describedby="dosePerKgError">
+                                    <span>mg/kg</span>
+                                </div>
+                                <small id="dosePerKgError" class="error"></small>
+                            </label>
+                            <label class="field">
+                                <span class="label-row"><span>Patient weight</span></span>
+                                <div class="unit-input">
+                                    <input id="patientWeight" type="number" inputmode="decimal" min="0" step="any" placeholder="20" aria-describedby="patientWeightError">
+                                    <span>kg</span>
+                                </div>
+                                <small id="patientWeightError" class="error"></small>
+                            </label>
+                        </div>
 
+                        <label class="field">
+                            <span class="label-row">
+                                <span>Frequency</span>
+                                <span class="optional-tag">Optional</span>
+                            </span>
+                            <div class="unit-input">
+                                <input id="frequency" type="number" inputmode="numeric" min="0" step="1" max="24" placeholder="3" aria-describedby="frequencyError">
+                                <span>times/day</span>
+                            </div>
+                            <small id="frequencyError" class="error"></small>
+                            <small id="frequencyWarning" class="warning" hidden></small>
+                        </label>
+
+                        <button id="calculateBtn" class="primary-btn" type="submit" disabled>Calculate</button>
+                    </div>
+                </form>
+
+                <aside class="safety-note">
+                    <span class="shield" aria-hidden="true">✓</span>
+                    <p><strong>Safety note.</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+                </aside>
+
+            </section>
+
+            <!-- ═══ SCREEN 2 — RESULT ═══ -->
+            <section id="resultScreen" class="screen" aria-labelledby="resultTitle" hidden>
+
+                <div class="result-hero">
+                    <h1 id="resultTitle">Volume to administer</h1>
+                    <div class="dose-result">
+                        <span id="volumeResult">0.00</span>
+                        <small>mL</small>
+                    </div>
+                    <p id="resultSummary"></p>
                 </div>
 
-              </div>
-
-
-              <div class="error-pair">
-
-                <small
-                  id="availableMgError"
-                  class="error"
-                ></small>
-
-                <small
-                  id="availableMlError"
-                  class="error"
-                ></small>
-
-              </div>
-
-
-              <small class="hint">
-                Example: 125 mg / 5 mL
-              </small>
-
-            </div>
-
-
-            <!-- FIXED DOSE -->
-
-            <div
-              id="fixedField"
-              class="mode-field"
-            >
-
-              <label class="field">
-
-                <span class="label-row">
-
-                  <span>Required dose</span>
-
-                  <span class="mode-badge">
-                    Fixed dose
-                  </span>
-
-                </span>
-
-
-                <div class="unit-input">
-
-                  <input
-                    id="requiredDose"
-                    name="requiredDose"
-                    type="number"
-                    inputmode="decimal"
-                    min="0"
-                    step="any"
-                    placeholder="250"
-                    aria-describedby="requiredDoseError"
-                  >
-
-                  <span>mg</span>
-
+                <div id="dailyCard" class="card daily-card" hidden>
+                    <span class="card-kicker">Total daily volume</span>
+                    <strong id="dailyResult">0.00 mL</strong>
+                    <span id="dailyFrequency">Frequency: 0 times daily</span>
                 </div>
 
-
-                <small
-                  id="requiredDoseError"
-                  class="error"
-                ></small>
-
-              </label>
-
-            </div>
-
-
-            <!-- DOSE PER KG -->
-
-            <div
-              id="weightField"
-              class="mode-field de-emphasized"
-            >
-
-              <label class="field">
-
-                <span class="label-row">
-
-                  <span>Dose per kg</span>
-
-                  <span class="mode-badge">
-                    Weight-based
-                  </span>
-
-                </span>
-
-
-                <div class="unit-input">
-
-                  <input
-                    id="dosePerKg"
-                    name="dosePerKg"
-                    type="number"
-                    inputmode="decimal"
-                    min="0"
-                    step="any"
-                    placeholder="10"
-                    aria-describedby="dosePerKgError"
-                  >
-
-                  <span>mg/kg</span>
-
+                <div class="card">
+                    <div class="section-heading">
+                        <h2>Calculation breakdown</h2>
+                    </div>
+                    <div id="breakdown" class="breakdown"></div>
                 </div>
 
-
-                <small
-                  id="dosePerKgError"
-                  class="error"
-                ></small>
-
-              </label>
-
-            </div>
-
-
-            <!-- PATIENT WEIGHT -->
-
-            <div
-              id="patientWeightField"
-              class="mode-field de-emphasized"
-            >
-
-              <label class="field">
-
-                <span class="label-row">
-
-                  <span>Patient weight</span>
-
-                  <span class="mode-badge">
-                    Weight-based
-                  </span>
-
-                </span>
-
-
-                <div class="unit-input">
-
-                  <input
-                    id="patientWeight"
-                    name="patientWeight"
-                    type="number"
-                    inputmode="decimal"
-                    min="0"
-                    step="any"
-                    placeholder="20"
-                    aria-describedby="patientWeightError"
-                  >
-
-                  <span>kg</span>
-
+                <div class="export-card">
+                    <div class="export-icon">↓</div>
+                    <div class="export-content">
+                        <h2>Export calculation</h2>
+                        <p>Save this working as a CSV file for the patient record.</p>
+                    </div>
+                    <button id="exportBtn" class="export-btn" type="button">Export details</button>
                 </div>
 
+                <button id="editBtn" class="secondary-btn" type="button">← Back / edit</button>
 
-                <small
-                  id="patientWeightError"
-                  class="error"
-                ></small>
+                <aside class="safety-note">
+                    <span class="shield" aria-hidden="true">✓</span>
+                    <p><strong>Safety note.</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+                </aside>
 
-              </label>
+            </section>
 
-            </div>
+        </main>
 
-
-            <!-- FREQUENCY -->
-
-            <label class="field">
-
-              <span class="label-row">
-
-                <span>Frequency</span>
-
-                <span class="optional-tag">
-                  Optional
-                </span>
-
-              </span>
-
-
-              <div class="unit-input">
-
-                <input
-                  id="frequency"
-                  name="frequency"
-                  type="number"
-                  inputmode="numeric"
-                  min="0"
-                  step="1"
-                  max="24"
-                  placeholder="3"
-                  aria-describedby="frequencyError"
-                >
-
-                <span>times/day</span>
-
-              </div>
-
-
-              <small
-                id="frequencyError"
-                class="error"
-              ></small>
-
-
-              <small
-                id="frequencyWarning"
-                class="warning"
-              ></small>
-
-            </label>
-
-
-            <!-- CALCULATE -->
-
-            <button
-              id="calculateBtn"
-              class="primary-btn"
-              type="submit"
-              disabled
-            >
-              Calculate
-            </button>
-
-          </div>
-
-        </form>
-
-
-        <!-- SAFETY NOTE -->
-
-        <aside class="safety-note">
-
-          <span
-            class="shield"
-            aria-hidden="true"
-          >
-            ✓
-          </span>
-
-          <p>
-
-            <strong>Safety note:</strong>
-
-            MEDIDOSE performs the arithmetic only.
-            Always verify against the prescription and consult
-            a healthcare professional before administering any medication.
-
-          </p>
-
-        </aside>
-
-      </section>
-
-
-
-      <!-- ==================================================
-           SCREEN 2 — RESULT
-      =================================================== -->
-
-      <section
-        id="resultScreen"
-        class="screen"
-        aria-labelledby="resultTitle"
-        hidden
-      >
-
-        <div class="result-hero">
-
-          <span class="eyebrow">
-            CALCULATION RESULT
-          </span>
-
-          <h1 id="resultTitle">
-            Dose to administer
-          </h1>
-
-
-          <div class="dose-result">
-
-            <span id="volumeResult">
-              0.00
-            </span>
-
-            <small>
-              mL
-            </small>
-
-          </div>
-
-
-          <p id="resultSummary"></p>
-
-        </div>
-
-
-        <!-- TOTAL DAILY VOLUME -->
-
-        <div
-          id="dailyCard"
-          class="card daily-card"
-          hidden
-        >
-
-          <span class="card-kicker">
-            TOTAL DAILY VOLUME
-          </span>
-
-          <strong id="dailyResult">
-            0.00 mL
-          </strong>
-
-          <span id="dailyFrequency">
-            Frequency: 0 times daily
-          </span>
-
-        </div>
-
-
-
-        <!-- CALCULATION BREAKDOWN -->
-
-        <div class="card breakdown-card">
-
-          <div class="section-heading">
-
-            <div>
-
-              <h2>
-                Calculation breakdown
-              </h2>
-
-            </div>
-
-          </div>
-
-
-          <div
-            id="breakdown"
-            class="breakdown"
-          ></div>
-
-        </div>
-
-
-
-        <!-- ==================================================
-             EXPORT DETAILS
-        =================================================== -->
-
-        <div class="card export-card">
-
-          <div class="export-icon">
-            ↓
-          </div>
-
-          <div class="export-content">
-
-            <h2>
-              Export calculation
-            </h2>
-
-            <p>
-               CSV file.
-            </p>
-
-          </div>
-
-
-          <button
-            id="exportBtn"
-            class="export-btn"
-            type="button"
-          >
-            Export Details
-          </button>
-
-        </div>
-
-
-
-        <!-- BACK / EDIT -->
-
-        <button
-          id="editBtn"
-          class="secondary-btn"
-          type="button"
-        >
-          ← Back / Edit
-        </button>
-
-
-        <!-- SAFETY NOTE -->
-
-        <aside class="safety-note">
-
-          <span
-            class="shield"
-            aria-hidden="true"
-          >
-            ✓
-          </span>
-
-          <p>
-
-            <strong>Safety note:</strong>
-
-            MEDIDOSE performs the arithmetic only.
-            Always verify against the prescription and consult
-            a healthcare professional before administering any medication.
-
-          </p>
-
-        </aside>
-
-      </section>
-
-    </main>
-
-
-
-    <!-- FOOTER -->
-
-    <footer>
-
-     
-      <span>
-        Arithmetic only • No drug database • No dose suggestions
-      </span>
-
-    </footer>
-
-  </div>
-
-
-
-  <!-- ==================================================
-       INSTALL BANNER
-  =================================================== -->
-<!-- 
-  <div
-    id="installBanner"
-    class="install-banner"
-    hidden
-  >
-
-    <div>
-
-      <strong>
-        Install MEDIDOSE
-      </strong>
-
-      <p>
-        Use MEDIDOSE like an app from your home screen.
-      </p>
+        <footer>
+            <span><strong>MEDIDOSE</strong> by MUPSA</span>
+            <!-- <span>Arithmetic only · No drug database · No dose suggestions</span> -->
+        </footer>
 
     </div>
 
-
-    <div class="install-actions">
-
-      <button
-        id="bannerInstallBtn"
-        class="primary-btn compact"
-        type="button"
-      >
-        Install
-      </button>
-
-      <button
-        id="dismissInstallBtn"
-        class="text-btn"
-        type="button"
-      >
-        Not now
-      </button>
-
+    <!-- ═══ EXPORT MODAL ═══ -->
+    <div id="exportModal" class="modal-overlay" hidden>
+        <div class="export-modal" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
+            <button id="closeExportModal" class="modal-close" type="button" aria-label="Close export dialog">×</button>
+            <div class="modal-icon">↓</div>
+            <h2 id="exportModalTitle">Record reviewer initials</h2>
+            <p>Add the initials of the person reviewing this calculation. They're included in the exported file for the patient record.</p>
+            <label class="modal-field" for="exportCode">Reviewer initials</label>
+            <input id="exportCode" type="text" autocomplete="off" maxlength="6" placeholder="e.g. JM">
+            <small id="exportCodeError" class="modal-error"></small>
+            <div class="modal-actions">
+                <button id="cancelExportBtn" class="secondary-modal-btn" type="button">Cancel</button>
+                <button id="confirmExportBtn" class="primary-modal-btn" type="button">Download CSV</button>
+            </div>
+        </div>
     </div>
 
-  </div> -->
+    <script>
+        (function() {
+            var doseType = 'fixed';
+            var lastCalc = null;
 
+            var els = {
+                tabFixed: document.getElementById('tabFixed'),
+                tabWeight: document.getElementById('tabWeight'),
+                doseTypeInput: document.getElementById('doseType'),
+                fixedField: document.getElementById('fixedField'),
+                weightField: document.getElementById('weightField'),
+                availableMg: document.getElementById('availableMg'),
+                availableMl: document.getElementById('availableMl'),
+                requiredDose: document.getElementById('requiredDose'),
+                dosePerKg: document.getElementById('dosePerKg'),
+                patientWeight: document.getElementById('patientWeight'),
+                frequency: document.getElementById('frequency'),
+                calculateBtn: document.getElementById('calculateBtn'),
+                form: document.getElementById('doseForm'),
+                inputScreen: document.getElementById('inputScreen'),
+                resultScreen: document.getElementById('resultScreen'),
+                volumeResult: document.getElementById('volumeResult'),
+                resultSummary: document.getElementById('resultSummary'),
+                dailyCard: document.getElementById('dailyCard'),
+                dailyResult: document.getElementById('dailyResult'),
+                dailyFrequency: document.getElementById('dailyFrequency'),
+                breakdown: document.getElementById('breakdown'),
+                editBtn: document.getElementById('editBtn'),
+                exportBtn: document.getElementById('exportBtn'),
+                exportModal: document.getElementById('exportModal'),
+                closeExportModal: document.getElementById('closeExportModal'),
+                cancelExportBtn: document.getElementById('cancelExportBtn'),
+                confirmExportBtn: document.getElementById('confirmExportBtn'),
+                exportCode: document.getElementById('exportCode'),
+                exportCodeError: document.getElementById('exportCodeError'),
+                frequencyWarning: document.getElementById('frequencyWarning')
+            };
 
+            function setDoseType(type) {
+                doseType = type;
+                els.doseTypeInput.value = type;
+                var isFixed = type === 'fixed';
+                els.tabFixed.classList.toggle('active', isFixed);
+                els.tabWeight.classList.toggle('active', !isFixed);
+                els.tabFixed.setAttribute('aria-selected', isFixed);
+                els.tabWeight.setAttribute('aria-selected', !isFixed);
+                els.fixedField.hidden = !isFixed;
+                els.weightField.hidden = isFixed;
+                validate();
+            }
 
-  <!-- ==================================================
-       EXPORT CODE MODAL
-  =================================================== -->
+            els.tabFixed.addEventListener('click', function() { setDoseType('fixed'); });
+            els.tabWeight.addEventListener('click', function() { setDoseType('weight'); });
 
-  <div
-    id="exportModal"
-    class="modal-overlay"
-    hidden
-  >
+            function num(el) {
+                var v = parseFloat(el.value);
+                return isNaN(v) ? null : v;
+            }
 
-    <div
-      class="export-modal"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="exportModalTitle"
-    >
+            function setError(inputEl, errorEl, message) {
+                if (message) {
+                    inputEl.classList.add('invalid');
+                    errorEl.textContent = message;
+                } else {
+                    inputEl.classList.remove('invalid');
+                    errorEl.textContent = '';
+                }
+            }
 
-      <button
-        id="closeExportModal"
-        class="modal-close"
-        type="button"
-        aria-label="Close export dialog"
-      >
-        ×
-      </button>
+            function validate() {
+                var mg = num(els.availableMg);
+                var ml = num(els.availableMl);
+                var ok = true;
 
+                setError(els.availableMg, document.getElementById('availableMgError'), (els.availableMg.value !== '' && (mg ===
+                    null || mg <= 0)) ? 'Enter a positive number' : '');
+                setError(els.availableMl, document.getElementById('availableMlError'), (els.availableMl.value !== '' && (ml ===
+                    null || ml <= 0)) ? 'Enter a positive number' : '');
+                if (mg === null || mg <= 0 || ml === null || ml <= 0) ok = false;
 
-      <div class="modal-icon">
-        ↓
-      </div>
+                if (doseType === 'fixed') {
+                    var dose = num(els.requiredDose);
+                    setError(els.requiredDose, document.getElementById('requiredDoseError'), (els.requiredDose.value !== '' && (
+                        dose === null || dose <= 0)) ? 'Enter a positive number' : '');
+                    if (dose === null || dose <= 0) ok = false;
+                } else {
+                    var perKg = num(els.dosePerKg);
+                    var weight = num(els.patientWeight);
+                    setError(els.dosePerKg, document.getElementById('dosePerKgError'), (els.dosePerKg.value !== '' && (perKg ===
+                        null || perKg <= 0)) ? 'Enter a positive number' : '');
+                    setError(els.patientWeight, document.getElementById('patientWeightError'), (els.patientWeight.value !==
+                        '' && (weight === null || weight <= 0)) ? 'Enter a positive number' : '');
+                    if (perKg === null || perKg <= 0 || weight === null || weight <= 0) ok = false;
+                }
 
+                var freq = num(els.frequency);
+                var freqErrEl = document.getElementById('frequencyError');
+                if (els.frequency.value !== '' && (freq === null || freq < 0 || freq > 24)) {
+                    setError(els.frequency, freqErrEl, 'Enter a value between 0 and 24');
+                    ok = false;
+                } else {
+                    setError(els.frequency, freqErrEl, '');
+                }
 
-      <span class="eyebrow">
-        EXPORT DETAILS
-      </span>
+                if (freq !== null && freq > 6) {
+                    els.frequencyWarning.hidden = false;
+                    els.frequencyWarning.textContent = 'Unusually high frequency — double-check against the prescription.';
+                } else {
+                    els.frequencyWarning.hidden = true;
+                }
 
+                els.calculateBtn.disabled = !ok;
+                return ok;
+            }
 
-      <h2 id="exportModalTitle">
-        Enter export code
-      </h2>
+            [els.availableMg, els.availableMl, els.requiredDose, els.dosePerKg, els.patientWeight, els.frequency]
+            .forEach(function(el) { el.addEventListener('input', validate); });
 
+            function fmt(n) {
+                return (Math.round(n * 100) / 100).toFixed(2);
+            }
 
-      <p>
-        Enter the export code to download the current
-        MEDIDOSE calculation as a CSV file.
-      </p>
+            els.form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!validate()) return;
 
+                var mg = num(els.availableMg);
+                var ml = num(els.availableMl);
+                var concentration = mg / ml;
+                var freq = num(els.frequency);
+                var breakdown = [];
+                var totalDoseMg, volume;
 
-      <label
-        class="modal-field"
-        for="exportCode"
-      >
-        Export code
+                if (doseType === 'fixed') {
+                    totalDoseMg = num(els.requiredDose);
+                    volume = totalDoseMg / concentration;
+                    breakdown.push({
+                        label: 'Volume',
+                        text: 'Volume (mL) = Required dose ÷ Concentration\n= ' + totalDoseMg + ' mg ÷ (' + mg + ' mg / ' +
+                            ml + ' mL)\n= ' + fmt(volume) + ' mL'
+                    });
+                } else {
+                    var perKg = num(els.dosePerKg);
+                    var weight = num(els.patientWeight);
+                    totalDoseMg = perKg * weight;
+                    volume = totalDoseMg / concentration;
+                    breakdown.push({
+                        label: 'Total dose',
+                        text: 'Total dose (mg) = Dose per kg × Weight\n= ' + perKg + ' mg/kg × ' + weight + ' kg\n= ' + fmt(
+                            totalDoseMg) + ' mg'
+                    });
+                    breakdown.push({
+                        label: 'Volume',
+                        text: 'Volume (mL) = Total dose ÷ Concentration\n= ' + fmt(totalDoseMg) + ' mg ÷ (' + mg +
+                            ' mg / ' + ml + ' mL)\n= ' + fmt(volume) + ' mL'
+                    });
+                }
 
-        <input
-          id="exportCode"
-          type="password"
-          inputmode="text"
-          autocomplete="off"
-          placeholder="Enter code"
-        >
+                var dailyVolume = null;
+                if (freq !== null && freq > 0) {
+                    dailyVolume = volume * freq;
+                    breakdown.push({
+                        label: 'Daily total',
+                        text: 'Daily volume (mL) = Volume per dose × Frequency\n= ' + fmt(volume) + ' mL × ' + freq +
+                            '\n= ' + fmt(dailyVolume) + ' mL/day'
+                    });
+                }
 
-      </label>
+                els.volumeResult.textContent = fmt(volume);
+                els.resultSummary.textContent = doseType === 'fixed' ?
+                    'Draw up ' + fmt(volume) + ' mL to deliver ' + totalDoseMg + ' mg per dose.' :
+                    'Draw up ' + fmt(volume) + ' mL to deliver ' + fmt(totalDoseMg) + ' mg per dose.';
 
+                if (dailyVolume !== null) {
+                    els.dailyCard.hidden = false;
+                    els.dailyResult.textContent = fmt(dailyVolume) + ' mL';
+                    els.dailyFrequency.textContent = 'Frequency: ' + freq + ' times daily';
+                } else {
+                    els.dailyCard.hidden = true;
+                }
 
-      <small
-        id="exportCodeError"
-        class="modal-error"
-      ></small>
+                els.breakdown.innerHTML = '';
+                breakdown.forEach(function(item) {
+                    var div = document.createElement('div');
+                    div.className = 'formula';
+                    var label = document.createElement('span');
+                    label.className = 'formula-label';
+                    label.textContent = item.label;
+                    div.appendChild(label);
+                    div.appendChild(document.createTextNode(item.text));
+                    div.style.whiteSpace = 'pre-line';
+                    els.breakdown.appendChild(div);
+                });
 
+                lastCalc = {
+                    doseType: doseType,
+                    availableMg: mg,
+                    availableMl: ml,
+                    requiredDose: doseType === 'fixed' ? totalDoseMg : null,
+                    dosePerKg: doseType === 'weight' ? num(els.dosePerKg) : null,
+                    patientWeight: doseType === 'weight' ? num(els.patientWeight) : null,
+                    totalDoseMg: totalDoseMg,
+                    volume: volume,
+                    frequency: freq,
+                    dailyVolume: dailyVolume
+                };
 
-      <div class="modal-actions">
+                els.inputScreen.hidden = true;
+                els.resultScreen.hidden = false;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
 
-        <button
-          id="cancelExportBtn"
-          class="secondary-modal-btn"
-          type="button"
-        >
-          Cancel
-        </button>
+            els.editBtn.addEventListener('click', function() {
+                els.resultScreen.hidden = true;
+                els.inputScreen.hidden = false;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
 
-        <button
-          id="confirmExportBtn"
-          class="primary-modal-btn"
-          type="button"
-        >
-          Download CSV
-        </button>
+            function openModal() {
+                els.exportCode.value = '';
+                els.exportCodeError.textContent = '';
+                els.exportModal.hidden = false;
+                setTimeout(function() { els.exportCode.focus(); }, 30);
+            }
 
-      </div>
+            function closeModal() { els.exportModal.hidden = true; }
 
-    </div>
+            els.exportBtn.addEventListener('click', openModal);
+            els.closeExportModal.addEventListener('click', closeModal);
+            els.cancelExportBtn.addEventListener('click', closeModal);
+            els.exportModal.addEventListener('click', function(e) { if (e.target === els.exportModal) closeModal(); });
 
-  </div>
+            els.confirmExportBtn.addEventListener('click', function() {
+                var initials = els.exportCode.value.trim();
+                if (!initials) {
+                    els.exportCodeError.textContent = 'Enter reviewer initials to continue.';
+                    return;
+                }
+                if (!lastCalc) { closeModal(); return; }
 
+                var rows = [
+                    ['Field', 'Value'],
+                    ['Dose type', lastCalc.doseType === 'fixed' ? 'Fixed dose' : 'Weight-based'],
+                    ['Available concentration', lastCalc.availableMg + ' mg / ' + lastCalc.availableMl + ' mL']
+                ];
+                if (lastCalc.doseType === 'fixed') {
+                    rows.push(['Required dose', lastCalc.requiredDose + ' mg']);
+                } else {
+                    rows.push(['Dose per kg', lastCalc.dosePerKg + ' mg/kg']);
+                    rows.push(['Patient weight', lastCalc.patientWeight + ' kg']);
+                    rows.push(['Total dose', fmt(lastCalc.totalDoseMg) + ' mg']);
+                }
+                rows.push(['Volume per dose', fmt(lastCalc.volume) + ' mL']);
+                if (lastCalc.frequency) {
+                    rows.push(['Frequency', lastCalc.frequency + ' times/day']);
+                    rows.push(['Total daily volume', fmt(lastCalc.dailyVolume) + ' mL']);
+                }
+                rows.push(['Reviewed by', initials.toUpperCase()]);
+                rows.push(['Exported', new Date().toLocaleString()]);
 
+                var csv = rows.map(function(r) {
+                    return r.map(function(cell) {
+                        var s = String(cell).replace(/"/g, '""');
+                        return /[",\n]/.test(s) ? '"' + s + '"' : s;
+                    }).join(',');
+                }).join('\n');
 
-  <script src="app.js"></script>
+                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'medidose-calculation.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                closeModal();
+            });
+
+            validate();
+        })();
+    </script>
 
 </body>
 </html>
