@@ -71,7 +71,7 @@ button{ cursor:pointer; }
   border-radius:11px;
   overflow:hidden;
   background:#ffffff;
-  border:1px solid var(--line-strong);
+  border:0.5px;
   display:grid; place-items:center;
   flex:0 0 auto;
 }
