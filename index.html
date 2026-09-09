@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#0e6b5c">
+<meta name="theme-color" content="#173a61">
 <meta name="description" content="MEDIDOSE converts a prescribed medication dose into the volume to draw up and administer.">
 <title>MEDIDOSE — Dose Calculator</title>
 <link rel="manifest" href="manifest.json">
@@ -16,23 +16,27 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
 
 :root{
-  --ink:#17251f;
-  --muted:#5c6b64;
-  --faint:#8a978f;
+  --ink:#1a1c1b;
+  --muted:#5c665f;
+  --faint:#8b968e;
 
-  --teal:#0e6b5c;
-  --teal-deep:#0a4a40;
-  --teal-soft:#e5f1ec;
+  --navy:#254f80;
+  --navy-deep:#173a61;
 
-  --gold:#a97a26;
-  --gold-soft:#f6ecd8;
+  --teal:#2d6b52;
+  --teal-deep:#1f4d3b;
+  --teal-soft:#e6f0ea;
+  --teal-line:#9dc9b3;
+  --teal-bright:#3a8a68;
 
-  --maroon:#7d3230;
+  --gold:#e0a02f;
+  --gold-deep:#b57e1f;
+  --gold-soft:#faf0da;
 
-  --line:#dbe3dd;
-  --line-strong:#c3cec6;
+  --line:#dde4de;
+  --line-strong:#c2cdc4;
   --surface:#ffffff;
-  --paper:#f5f4ee;
+  --paper:#f6f6f2;
 
   --danger:#a8352a;
   --danger-soft:#faeae7;
@@ -76,20 +80,25 @@ button{ cursor:pointer; }
   justify-content:space-between;
   gap:16px;
   border-bottom:1px solid var(--line);
+  position:relative;
+}
+.topbar::after{
+  content:'';
+  position:absolute;
+  left:0; right:0; bottom:-1px;
+  height:3px;
+  background:linear-gradient(90deg, var(--navy), var(--teal) 55%, var(--gold));
+  border-radius:3px;
 }
 
-.brand{ display:flex; align-items:center; gap:13px; }
+.brand{ display:flex; align-items:center; gap:11px; }
 
 .brand-mark{
-  width:44px; height:44px;
-  border-radius:11px;
-  overflow:hidden;
-  background:#ffffff;
-  border:1px solid var(--line-strong);
+  width:52px; height:52px;
   display:grid; place-items:center;
   flex:0 0 auto;
 }
-.brand-mark img{ width:100%; height:100%; object-fit:contain; padding:3px; }
+.brand-mark img{ width:100%; height:100%; object-fit:contain; }
 
 .brand-text{ line-height:1.15; }
 .brand-text strong{
@@ -178,7 +187,9 @@ button{ cursor:pointer; }
   border-radius:var(--radius-l);
   padding:22px;
   margin-bottom:14px;
+  transition:box-shadow .2s, transform .2s;
 }
+.card:hover{ box-shadow:0 10px 26px rgba(14,122,104,.08); }
 
 .section-heading{ margin-bottom:18px; }
 .section-heading h2{
@@ -211,9 +222,10 @@ button{ cursor:pointer; }
   transition:background .15s, color .15s, box-shadow .15s;
 }
 .segmented button.active{
-  background:var(--surface);
+  background:linear-gradient(135deg, #ffffff, var(--teal-soft));
   color:var(--teal-deep);
-  box-shadow:0 1px 0 var(--line-strong), 0 4px 10px rgba(14,107,92,.08);
+  box-shadow:0 1px 0 var(--line-strong), 0 6px 14px rgba(14,122,104,.16);
+  transform:translateY(-1px);
 }
 
 .field{ display:block; margin:0 0 18px; }
@@ -232,15 +244,21 @@ button{ cursor:pointer; }
 
 input, select{
   width:100%; height:48px;
-  border:1px solid var(--line-strong);
+  border:1.5px solid var(--teal-line);
   border-radius:var(--radius-s);
-  background:var(--surface);
+  background:var(--teal-soft);
   color:var(--ink);
   outline:none;
   padding:0 14px;
-  transition:border-color .15s, box-shadow .15s;
+  transition:border-color .15s, box-shadow .15s, background .15s, transform .1s;
 }
-input:focus{ border-color:var(--teal); box-shadow:0 0 0 3px rgba(14,107,92,.14); }
+input:hover, select:hover{ border-color:var(--teal); }
+input:focus, select:focus{
+  border-color:var(--teal);
+  background:var(--surface);
+  box-shadow:0 0 0 4px rgba(14,107,92,.16);
+  transform:translateY(-1px);
+}
 input.invalid{ border-color:var(--danger); background:var(--danger-soft); }
 
 .compound-input{
@@ -267,19 +285,22 @@ input.invalid{ border-color:var(--danger); background:var(--danger-soft); }
 
 .primary-btn, .secondary-btn{
   width:100%; border:0; border-radius:12px; min-height:52px; font-weight:600; font-size:14.5px;
+  transition:transform .12s ease, background .15s, box-shadow .15s;
 }
 .primary-btn{
-  color:#fff; background:var(--teal); letter-spacing:.01em;
-  box-shadow:0 8px 18px rgba(14,107,92,.22);
+  color:#fff; background:linear-gradient(135deg, var(--teal), var(--teal)); letter-spacing:.01em;
+  box-shadow:0 8px 18px rgba(14,122,104,.28);
 }
-.primary-btn:hover:not(:disabled){ background:var(--teal-deep); }
+.primary-btn:hover:not(:disabled){ background:linear-gradient(135deg, var(--teal), var(--teal-deep)); transform:translateY(-1px); }
+.primary-btn:active:not(:disabled){ transform:translateY(0) scale(.98); }
 .primary-btn:disabled{ background:#c9d3ce; box-shadow:none; cursor:not-allowed; color:#8b968f;}
 
 .secondary-btn{
   background:var(--surface); color:var(--teal-deep); border:1px solid var(--line-strong);
   margin:12px 0 16px;
 }
-.secondary-btn:hover{ border-color:var(--teal); }
+.secondary-btn:hover{ border-color:var(--teal); transform:translateY(-1px); }
+.secondary-btn:active{ transform:translateY(0) scale(.98); }
 
 /* ================= SAFETY NOTE ================= */
 
@@ -312,6 +333,12 @@ input.invalid{ border-color:var(--danger); background:var(--danger-soft); }
   font-size:clamp(52px, 15vw, 78px);
   font-weight:600; letter-spacing:-.02em; line-height:1;
 }
+.dose-result.pop{ animation:dosePop .42s cubic-bezier(.34,1.56,.64,1); }
+@keyframes dosePop{
+  0%{ transform:scale(.85); opacity:0; }
+  60%{ transform:scale(1.04); opacity:1; }
+  100%{ transform:scale(1); }
+}
 .dose-result small{
   font-family:'IBM Plex Sans', sans-serif;
   font-size:18px; color:var(--muted); font-weight:600;
@@ -320,7 +347,7 @@ input.invalid{ border-color:var(--danger); background:var(--danger-soft); }
 
 .daily-card{
   display:flex; flex-direction:column; gap:5px;
-  background:var(--teal-deep); color:#fff; border:0;
+  background:linear-gradient(135deg, var(--teal), var(--teal-deep)); color:#fff; border:0;
 }
 .card-kicker{
   color:#bfe3da; font-size:10.5px; letter-spacing:.06em; font-weight:600; text-transform:uppercase;
@@ -427,7 +454,7 @@ footer strong{ color:var(--muted); font-weight:600; }
   <header class="topbar">
     <div class="brand">
       <div class="brand-mark" aria-hidden="true">
-        <img src="icon-192.png" alt="">
+        <img src="logo.png" alt="MUPSA">
       </div>
       <div class="brand-text">
         <strong>MEDIDOSE</strong>
@@ -447,14 +474,17 @@ footer strong{ color:var(--muted); font-weight:600; }
     <!-- SCREEN 1 — INPUT -->
     <section id="inputScreen" class="screen active" aria-labelledby="inputTitle">
 
-
+      <div class="hero">
+        <h1 id="inputTitle">Calculate the volume to administer.</h1>
+        <p>Enter the prescribed dose and the medicine's concentration. MEDIDOSE performs the arithmetic only — it does not suggest or verify doses.</p>
+      </div>
 
       <form id="doseForm" novalidate>
         <div class="card">
 
           <div class="section-heading">
             <h2>Dose details</h2>
-          
+            <p>Choose how the prescribed dose is written on the chart.</p>
           </div>
 
           <div class="segmented" role="tablist" aria-label="Dose type">
@@ -533,8 +563,12 @@ footer strong{ color:var(--muted); font-weight:600; }
         </div>
       </form>
 
+      <aside class="safety-note">
+        <span class="shield" aria-hidden="true">&#10003;</span>
+        <p><strong>Safety note.</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+      </aside>
 
-    </section> 
+    </section>
 
     <!-- SCREEN 2 — RESULT -->
     <section id="resultScreen" class="screen" aria-labelledby="resultTitle" hidden>
@@ -565,14 +599,17 @@ footer strong{ color:var(--muted); font-weight:600; }
         <div class="export-icon">&#8595;</div>
         <div class="export-content">
           <h2>Export calculation</h2>
-          <!-- <p>Save this working as a CSV file for the patient record.</p> -->
+          <p>Save this working as a CSV file for the patient record.</p>
         </div>
         <button id="exportBtn" class="export-btn" type="button">Export details</button>
       </div>
 
       <button id="editBtn" class="secondary-btn" type="button">&larr; Back / edit</button>
 
-   
+      <aside class="safety-note">
+        <span class="shield" aria-hidden="true">&#10003;</span>
+        <p><strong>Safety note.</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+      </aside>
 
     </section>
 
@@ -762,6 +799,10 @@ footer strong{ color:var(--muted); font-weight:600; }
     }
 
     els.volumeResult.textContent = fmt(volume);
+    var doseResultEl = els.volumeResult.closest('.dose-result');
+    doseResultEl.classList.remove('pop');
+    void doseResultEl.offsetWidth;
+    doseResultEl.classList.add('pop');
     els.resultSummary.textContent = doseType === 'fixed'
       ? 'Draw up ' + fmt(volume) + ' mL to deliver ' + totalDoseMg + ' mg per dose.'
       : 'Draw up ' + fmt(volume) + ' mL to deliver ' + fmt(totalDoseMg) + ' mg per dose.';
