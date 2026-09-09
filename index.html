@@ -474,17 +474,12 @@ footer strong{ color:var(--muted); font-weight:600; }
     <!-- SCREEN 1 — INPUT -->
     <section id="inputScreen" class="screen active" aria-labelledby="inputTitle">
 
-      <div class="hero">
-        <h1 id="inputTitle">Calculate the volume to administer.</h1>
-        <p>Enter the prescribed dose and the medicine's concentration. MEDIDOSE performs the arithmetic only — it does not suggest or verify doses.</p>
-      </div>
 
       <form id="doseForm" novalidate>
         <div class="card">
 
           <div class="section-heading">
             <h2>Dose details</h2>
-            <p>Choose how the prescribed dose is written on the chart.</p>
           </div>
 
           <div class="segmented" role="tablist" aria-label="Dose type">
@@ -606,10 +601,10 @@ footer strong{ color:var(--muted); font-weight:600; }
 
       <button id="editBtn" class="secondary-btn" type="button">&larr; Back / edit</button>
 
-      <aside class="safety-note">
+      <!-- <aside class="safety-note">
         <span class="shield" aria-hidden="true">&#10003;</span>
         <p><strong>Safety note.</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
-      </aside>
+      </aside> -->
 
     </section>
 
@@ -617,7 +612,7 @@ footer strong{ color:var(--muted); font-weight:600; }
 
   <footer>
     <span><strong>MEDIDOSE</strong> by MUPSA</span>
-    <span>Arithmetic only &middot; No drug database &middot; No dose suggestions</span>
+    <!-- <span>Arithmetic only &middot; No drug database &middot; No dose suggestions</span> -->
   </footer>
 
 </div>
@@ -628,7 +623,7 @@ footer strong{ color:var(--muted); font-weight:600; }
     <button id="closeExportModal" class="modal-close" type="button" aria-label="Close export dialog">&times;</button>
     <div class="modal-icon">&#8595;</div>
     <h2 id="exportModalTitle">Record reviewer initials</h2>
-    <p>Add the initials of the person reviewing this calculation. They're included in the exported file for the patient record.</p>
+    <!-- <p>Add the initials of the person reviewing this calculation. They're included in the exported file for the patient record.</p> -->
     <label class="modal-field" for="exportCode">Reviewer initials</label>
     <input id="exportCode" type="text" autocomplete="off" maxlength="6" placeholder="e.g. JM">
     <small id="exportCodeError" class="modal-error"></small>
