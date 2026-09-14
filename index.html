@@ -3,472 +3,960 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#173a61">
-<meta name="description" content="MEDIDOSE converts a prescribed medication dose into the volume to draw up and administer.">
-<title>MEDIDOSE — Dose Calculator</title>
+<meta name="theme-color" content="#07216B">
+<meta name="description" content="MEDIDOSE — Dose and volume calculator by MUPSA">
+<title>MEDIDOSE MUPSA Dose Calculator</title>
+
+<!-- Optional PWA files. Keep these if they exist in your project. -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MEDIDOSE">
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap');
 
-:root {
-    --ink: #10231a;
-    --muted: #4b5d53;
-    --faint: #718078;
+:root{
+  /* MUPSA / logo palette */
+  --navy:#07216B;
+  --navy-2:#0B2E86;
+  --blue:#024378;
+  --teal:#00A651;
+  --teal-dark:#007A43;
+  --teal-soft:#E7F8EF;
+  --gold:#F4B41A;
+  --gold-dark:#C98A00;
+  --gold-soft:#FFF6D8;
 
-    --mupsa-green: #07216b;
-    --mupsa-green-dark: #024378;
-    --mupsa-green-light: #e8f4ee;
+  --ink:#10231A;
+  --muted:#52645C;
+  --faint:#7C8983;
+  --line:#DCE5E0;
+  --line-strong:#B7C6BE;
+  --surface:#FFFFFF;
+  --paper:#F6F9F8;
+  --danger:#B42318;
+  --danger-soft:#FFF0EE;
+  --warning:#8A5F00;
+  --warning-soft:#FFF7DF;
 
-    --mupsa-gold: #f4b41a;
-    --mupsa-gold-dark: #c88b00;
-    --mupsa-gold-light: #fff6d9;
+  --radius-s:10px;
+  --radius-m:14px;
+  --radius-l:20px;
 
-    --line: #d5dfd9;
-    --line-strong: #aebdb4;
-
-    --surface: #ffffff;
-    --paper: #f8faf9;
-
-    --danger: #b42318;
-    --danger-soft: #fff0ee;
-
-    --warning: #8a5f00;
-    --warning-soft: #fff7df;
-
-    --radius-s: 8px;
-    --radius-m: 12px;
-    --radius-l: 16px;
+  --shadow-sm:0 4px 14px rgba(7,33,107,.07);
+  --shadow-md:0 12px 30px rgba(7,33,107,.11);
 }
 
-*{ box-sizing:border-box; }
+*{box-sizing:border-box}
 
-html{ scroll-behavior:smooth; }
-
-body {
-    margin: 0;
-    min-height: 100vh;
-    font-family: 'IBM Plex Sans', system-ui, sans-serif;
-    color: var(--ink);
-    background: #ffffff;
-    -webkit-font-smoothing: antialiased;
+html{
+  scroll-behavior:smooth;
 }
 
-button, input, select{ font:inherit; color:inherit; }
-button{ cursor:pointer; }
-:focus-visible{ outline:2px solid var(--teal); outline-offset:2px; }
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(0,166,81,.055), transparent 28%),
+    radial-gradient(circle at 100% 10%, rgba(244,180,26,.07), transparent 25%),
+    #fff;
+  font-family:'IBM Plex Sans',system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+:focus-visible{
+  outline:3px solid rgba(244,180,26,.55);
+  outline-offset:3px;
+}
 
 .app-shell{
-  width:min(100%, 640px);
+  width:min(100%,720px);
   margin:0 auto;
-  padding:0 20px 40px;
+  padding:0 20px 42px;
 }
 
 /* ================= HEADER ================= */
 
 .topbar{
-  min-height:88px;
+  min-height:92px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:16px;
-  border-bottom:1px solid var(--line);
   position:relative;
+  border-bottom:1px solid var(--line);
 }
+
 .topbar::after{
-  content:'';
+  content:"";
   position:absolute;
-  left:0; right:0; bottom:-1px;
-  height:3px;
-  background:linear-gradient(90deg, var(--navy), var(--teal) 55%, var(--gold));
-  border-radius:3px;
+  left:0;
+  right:0;
+  bottom:-2px;
+  height:4px;
+  background:linear-gradient(90deg,var(--navy),var(--blue) 38%,var(--teal) 70%,var(--gold));
+  border-radius:4px;
 }
 
-.brand{ display:flex; align-items:center; gap:11px; }
-
-.brand-mark {
-    width: 58px;
-    height: 58px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0;
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
 }
 
-.brand-mark img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    display: block;
-    background: transparent;
+.brand-mark{
+  width:60px;
+  height:60px;
+  flex:0 0 60px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border-radius:15px;
+  background:#fff;
 }
 
-.brand-text{ line-height:1.15; }
+.brand-mark img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.brand-text{
+  line-height:1.12;
+  min-width:0;
+}
+
 .brand-text strong{
   display:block;
-  font-family:'IBM Plex Serif', serif;
-  font-weight:600;
-  font-size:19px;
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-size:22px;
+  font-weight:700;
   letter-spacing:.01em;
-  color:var(--ink);
+  color:var(--navy);
 }
-.brand-text span{
+
+.brand-text strong span{
+  color:var(--gold-dark);
+}
+
+.brand-text small{
   display:block;
+  margin-top:5px;
   color:var(--muted);
-  font-size:11.5px;
-  margin-top:2px;
+  font-size:11px;
+  letter-spacing:.035em;
 }
 
 .install-btn{
-  border:1px solid var(--teal);
-  background:var(--teal-soft);
-  color:var(--teal-deep);
+  border:1px solid var(--gold);
+  background:var(--gold-soft);
+  color:#6D4B00;
   border-radius:999px;
-  padding:9px 15px;
-  font-weight:600;
-  font-size:12.5px;
+  padding:9px 14px;
+  font-weight:700;
+  font-size:12px;
   white-space:nowrap;
-  transition:background .15s, color .15s;
+  transition:.18s ease;
 }
-.install-btn:hover{ background:var(--teal); color:#fff; }
-.install-btn[hidden]{ display:none; }
+
+.install-btn:hover{
+  background:var(--gold);
+  color:#fff;
+  transform:translateY(-1px);
+}
+
+.install-btn[hidden]{display:none}
+
+/* ================= INSTALL TIP ================= */
 
 .ios-tip{
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:10px;
+  margin-top:14px;
+  padding:11px 13px;
+  border:1px solid #E7C35C;
+  border-radius:var(--radius-s);
   background:var(--gold-soft);
   color:var(--ink);
-  border:1px solid var(--gold);
-  border-radius:var(--radius-s);
-  padding:10px 12px;
-  font-size:12.5px;
+  font-size:12px;
   line-height:1.5;
-  margin-top:14px;
 }
-.ios-tip svg{ vertical-align:-2px; color:var(--gold); }
+
 .ios-tip button{
-  border:0; background:transparent; color:var(--muted);
-  font-size:18px; line-height:1; flex:0 0 auto; padding:2px 4px;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font-size:20px;
+  line-height:1;
+  padding:2px 4px;
 }
-.ios-tip[hidden]{ display:none; }
 
 /* ================= SCREENS ================= */
 
-.screen{ animation:fadeIn .25s ease; }
-.screen[hidden]{ display:none; }
-@keyframes fadeIn{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:none; } }
+.screen{
+  animation:fadeIn .25s ease;
+}
+
+.screen[hidden]{display:none}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
 
 /* ================= HERO ================= */
 
-.hero{ padding:34px 2px 22px; }
+.hero{
+  padding:34px 3px 22px;
+}
 
 .hero h1{
-  font-family:'IBM Plex Serif', serif;
-  font-weight:600;
-  font-size:clamp(28px, 6.4vw, 38px);
-  line-height:1.15;
-  letter-spacing:-.01em;
-  margin:0 0 10px;
+  margin:0 0 9px;
   max-width:26ch;
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-weight:700;
+  font-size:clamp(29px,7vw,40px);
+  line-height:1.1;
+  letter-spacing:-.025em;
+  color:var(--navy);
+}
+
+.hero h1 em{
+  color:var(--gold-dark);
+  font-style:normal;
 }
 
 .hero p{
-  color:var(--muted);
-  line-height:1.6;
   margin:0;
-  max-width:44ch;
-  font-size:14.5px;
+  max-width:48ch;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.65;
 }
 
-/* ================= FORM CARD ================= */
+/* ================= CARD ================= */
 
-.card {
-    background: #ffffff;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-l);
-    padding: 22px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 8px rgba(233, 172, 3, 0.05);
+.card{
+  background:rgba(255,255,255,.96);
+  border:1px solid var(--line);
+  border-radius:var(--radius-l);
+  padding:22px;
+  margin-bottom:15px;
+  box-shadow:var(--shadow-sm);
 }
-.card:hover{ box-shadow:0 10px 26px rgba(14,122,104,.08); }
 
-.section-heading{ margin-bottom:18px; }
+.card:hover{
+  box-shadow:var(--shadow-md);
+}
+
+/* ================= SECTION HEADINGS ================= */
+
+.section-heading{
+  margin-bottom:18px;
+}
+
 .section-heading h2{
-  font-family:'IBM Plex Serif', serif;
-  font-weight:600;
-  font-size:16px;
-  margin:0 0 4px;
+  margin:0 0 5px;
+  color:var(--navy);
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-size:18px;
+  font-weight:700;
 }
-.section-heading p{ color:var(--muted); font-size:12.5px; margin:0; }
 
-/* Segmented dose-type control */
+.section-heading p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* ================= DOSE TYPE ================= */
+
 .segmented{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:6px;
-  background:var(--paper);
+  gap:5px;
+  margin-bottom:21px;
+  padding:5px;
   border:1px solid var(--line);
   border-radius:var(--radius-m);
-  padding:5px;
-  margin-bottom:20px;
+  background:var(--paper);
 }
+
 .segmented button{
   border:0;
+  border-radius:10px;
+  padding:12px 8px;
   background:transparent;
-  border-radius:11px;
-  padding:11px 8px;
-  font-weight:600;
-  font-size:13px;
   color:var(--muted);
-  transition:background .15s, color .15s, box-shadow .15s;
+  font-size:13px;
+  font-weight:700;
+  transition:.18s ease;
 }
+
 .segmented button.active{
-  background:linear-gradient(135deg, #ffffff, var(--teal-soft));
-  color:var(--teal-deep);
-  box-shadow:0 1px 0 var(--line-strong), 0 6px 14px rgba(14,122,104,.16);
+  color:var(--navy);
+  background:#fff;
+  box-shadow:0 4px 12px rgba(7,33,107,.10);
+}
+
+.segmented button.active::before{
+  content:"";
+  display:inline-block;
+  width:7px;
+  height:7px;
+  margin-right:7px;
+  vertical-align:1px;
+  border-radius:50%;
+  background:var(--gold);
+}
+
+/* ================= FORM ================= */
+
+.field{
+  display:block;
+  margin:0 0 18px;
+}
+
+.field:last-child{margin-bottom:0}
+
+.label-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:8px;
+  font-size:13px;
+  font-weight:700;
+  color:var(--ink);
+}
+
+.required-tag,
+.optional-tag{
+  border-radius:999px;
+  padding:3px 9px;
+  font-size:10px;
+  font-weight:700;
+}
+
+.required-tag{
+  color:var(--navy);
+  background:#EAF0FF;
+}
+
+.optional-tag{
+  color:var(--muted);
+  background:#EEF2F0;
+}
+
+input,
+select{
+  width:100%;
+  height:50px;
+  border:1.5px solid var(--line-strong);
+  border-radius:var(--radius-s);
+  outline:none;
+  padding:0 14px;
+  background:#fff;
+  color:var(--ink);
+  transition:border-color .15s,box-shadow .15s,background .15s;
+}
+
+input::placeholder{color:#9AA6A0}
+
+input:hover,
+select:hover{
+  border-color:var(--blue);
+}
+
+input:focus,
+select:focus{
+  border-color:var(--teal);
+  box-shadow:0 0 0 4px rgba(0,166,81,.11);
+}
+
+input.invalid{
+  border-color:var(--danger);
+  background:var(--danger-soft);
+}
+
+.compound-input{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:8px;
+}
+
+.compound-input > div,
+.unit-input{
+  position:relative;
+}
+
+.compound-input input,
+.unit-input input{
+  padding-right:58px;
+  font-variant-numeric:tabular-nums;
+}
+
+.compound-input span,
+.unit-input span{
+  position:absolute;
+  right:13px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--blue);
+  font-size:11px;
+  font-weight:700;
+  pointer-events:none;
+}
+
+.compound-input b{
+  color:var(--gold-dark);
+  font-family:'IBM Plex Mono',monospace;
+  font-weight:700;
+}
+
+.hint{
+  display:block;
+  margin-top:7px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.error{
+  display:block;
+  min-height:15px;
+  margin-top:5px;
+  color:var(--danger);
+  font-size:11px;
+}
+
+.error-pair{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.warning{
+  display:block;
+  margin-top:8px;
+  padding:9px 10px;
+  border-radius:8px;
+  background:var(--warning-soft);
+  color:var(--warning);
+  font-size:11px;
+}
+
+.mode-field[hidden]{display:none}
+
+/* ================= PRIMARY / SECONDARY BUTTONS ================= */
+
+.primary-btn,
+.secondary-btn{
+  width:100%;
+  min-height:52px;
+  border-radius:13px;
+  font-size:14px;
+  font-weight:700;
+  transition:.16s ease;
+}
+
+.primary-btn{
+  border:0;
+  color:#fff;
+  background:linear-gradient(135deg,var(--gold),#E5A900);
+  box-shadow:0 8px 18px rgba(244,180,26,.22);
+  letter-spacing:.01em;
+}
+
+.primary-btn:hover:not(:disabled){
+  background:linear-gradient(135deg,#F8BE29,var(--gold-dark));
+  transform:translateY(-2px);
+  box-shadow:0 12px 24px rgba(244,180,26,.28);
+}
+
+.primary-btn:active:not(:disabled){
+  transform:translateY(0) scale(.985);
+}
+
+.primary-btn:disabled{
+  background:#CBD5D0;
+  color:#718078;
+  box-shadow:none;
+}
+
+.secondary-btn{
+  margin:12px 0 16px;
+  border:1.5px solid var(--navy);
+  background:#fff;
+  color:var(--navy);
+}
+
+.secondary-btn:hover{
+  background:#F2F5FF;
   transform:translateY(-1px);
 }
 
-.field{ display:block; margin:0 0 18px; }
-.field:last-child{ margin-bottom:0; }
-
-.label-row{
-  display:flex; align-items:center; justify-content:space-between;
-  gap:10px; margin-bottom:8px; font-size:13px; font-weight:600;
-}
-
-.required-tag, .optional-tag{
-  border-radius:999px; padding:3px 9px; font-size:10px; font-weight:600;
-}
-.required-tag{ color:var(--teal-deep); background:var(--teal-soft); }
-.optional-tag{ color:var(--muted); background:#eef1ef; }
-
-input,
-select {
-    width: 100%;
-    height: 48px;
-    border: 1.5px solid var(--line-strong);
-    border-radius: var(--radius-s);
-    background: #ffffff;
-    color: var(--ink);
-    outline: none;
-    padding: 0 14px;
-}
-input:hover, select:hover{ border-color:var(--teal); }
-input:focus,
-select:focus {
-    border-color: var(--mupsa-green);
-    box-shadow: 0 0 0 3px rgba(0, 107, 63, 0.12);
-}
-input.invalid{ border-color:var(--danger); background:var(--danger-soft); }
-
-.compound-input{
-  display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:8px;
-}
-.compound-input > div, .unit-input{ position:relative; }
-.compound-input input, .unit-input input{ padding-right:52px; font-variant-numeric:tabular-nums; }
-.compound-input span, .unit-input span{
-  position:absolute; right:13px; top:50%; transform:translateY(-50%);
-  color:var(--muted); font-size:12px; font-weight:600; pointer-events:none;
-}
-.compound-input b{ color:var(--faint); font-weight:400; }
-
-.hint{ color:var(--muted); font-size:11.5px; margin-top:7px; display:block; }
-.error{ color:var(--danger); font-size:11.5px; min-height:15px; display:block; margin-top:5px; }
-.error-pair{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.warning{
-  display:block; color:var(--warning); background:var(--warning-soft);
-  border-radius:8px; padding:8px 10px; font-size:11.5px; margin-top:8px;
-}
-
-.mode-field{ transition:opacity .18s; }
-.mode-field[hidden]{ display:none; }
-
-.primary-btn, .secondary-btn{
-  width:100%; border:0; border-radius:12px; min-height:52px; font-weight:600; font-size:14.5px;
-  transition:transform .12s ease, background .15s, box-shadow .15s;
-}
-.primary-btn {
-    color: #ffffff;
-    background: var(--mupsa-green);
-    letter-spacing: .01em;
-    box-shadow: none;
-}
-
-.primary-btn:hover:not(:disabled) {
-    background: var(--mupsa-green-dark);
-    transform: translateY(-1px);
-}
-
-.primary-btn:disabled {
-    background: #cbd5d0;
-    box-shadow: none;
-    color: #718078;
-}
-/* .primary-btn:hover:not(:disabled){ background:linear-gradient(135deg, var(--teal), var(--teal-deep)); transform:translateY(-1px); } */
-.primary-btn:active:not(:disabled){ transform:translateY(0) scale(.98); }
-/* .primary-btn:disabled{ background:#c9d3ce; box-shadow:none; cursor:not-allowed; color:#8b968f;} */
-
-.secondary-btn{
-  background:var(--surface); color:var(--teal-deep); border:1px solid var(--line-strong);
-  margin:12px 0 16px;
-}
-.secondary-btn:hover{ border-color:var(--teal); transform:translateY(-1px); }
-.secondary-btn:active{ transform:translateY(0) scale(.98); }
-
-/* ================= SAFETY NOTE ================= */
+/* ================= SAFETY ================= */
 
 .safety-note{
-  display:flex; gap:11px; align-items:flex-start;
-  color:var(--muted); font-size:12px; line-height:1.55;
-  padding:14px 4px; border-top:1px solid var(--line); margin-top:4px;
+  display:flex;
+  align-items:flex-start;
+  gap:11px;
+  padding:14px 4px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
 }
-.safety-note p{ margin:0; }
-.safety-note strong{ color:var(--ink); }
+
+.safety-note p{margin:0}
+.safety-note strong{color:var(--ink)}
+
 .shield{
-  flex:0 0 auto; width:20px; height:20px; margin-top:1px;
-  border-radius:50%; display:grid; place-items:center;
-  background:var(--teal-soft); color:var(--teal-deep); font-weight:700; font-size:11px;
+  flex:0 0 auto;
+  width:21px;
+  height:21px;
+  display:grid;
+  place-items:center;
+  margin-top:1px;
+  border-radius:50%;
+  background:var(--teal-soft);
+  color:var(--teal-dark);
+  font-weight:800;
 }
 
-/* ================= RESULT SCREEN ================= */
+/* ================= RESULT ================= */
 
-.result-hero{ text-align:center; padding:36px 4px 20px; }
+.result-hero{
+  padding:37px 4px 21px;
+  text-align:center;
+}
+
 .result-hero h1{
-  font-family:'IBM Plex Serif', serif; font-weight:600;
-  font-size:15px; letter-spacing:.02em; text-transform:uppercase;
-  color:var(--muted); margin:0 0 16px;
+  margin:0 0 14px;
+  color:var(--navy);
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:.025em;
+  text-transform:uppercase;
 }
 
 .dose-result{
-  display:flex; justify-content:center; align-items:baseline; gap:8px;
-  color:var(--teal-deep);
-  font-family:'IBM Plex Mono', ui-monospace, monospace;
-  font-size:clamp(52px, 15vw, 78px);
-  font-weight:600; letter-spacing:-.02em; line-height:1;
+  display:flex;
+  justify-content:center;
+  align-items:baseline;
+  gap:8px;
+  color:var(--navy);
+  font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:clamp(54px,16vw,82px);
+  font-weight:700;
+  letter-spacing:-.045em;
+  line-height:1;
 }
-.dose-result.pop{ animation:dosePop .42s cubic-bezier(.34,1.56,.64,1); }
-@keyframes dosePop{
-  0%{ transform:scale(.85); opacity:0; }
-  60%{ transform:scale(1.04); opacity:1; }
-  100%{ transform:scale(1); }
+
+.dose-result span{
+  background:linear-gradient(180deg,var(--navy),var(--blue));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
 }
+
 .dose-result small{
-  font-family:'IBM Plex Sans', sans-serif;
-  font-size:18px; color:var(--muted); font-weight:600;
+  color:var(--gold-dark);
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:19px;
+  font-weight:800;
 }
-.result-hero p{ margin:16px auto 0; color:var(--muted); max-width:36ch; font-size:13.5px; line-height:1.6;}
+
+.dose-result.pop{
+  animation:dosePop .42s cubic-bezier(.34,1.56,.64,1);
+}
+
+@keyframes dosePop{
+  0%{transform:scale(.85);opacity:0}
+  60%{transform:scale(1.045);opacity:1}
+  100%{transform:scale(1)}
+}
+
+.result-hero p{
+  max-width:39ch;
+  margin:15px auto 0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
+
+/* ================= DAILY RESULT ================= */
 
 .daily-card{
-  display:flex; flex-direction:column; gap:5px;
-  background:linear-gradient(135deg, var(--teal), var(--teal-deep)); color:#fff; border:0;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  overflow:hidden;
+  position:relative;
+  border:0;
+  color:#fff;
+  background:linear-gradient(135deg,var(--navy),var(--blue) 58%,var(--teal-dark));
+  box-shadow:0 14px 30px rgba(7,33,107,.18);
 }
-.card-kicker{
-  color:#bfe3da; font-size:10.5px; letter-spacing:.06em; font-weight:600; text-transform:uppercase;
-}
-.daily-card strong{
-  font-family:'IBM Plex Mono', monospace; font-size:28px; letter-spacing:-.01em;
-}
-.daily-card span:last-child{ opacity:.82; font-size:12px; }
 
-.breakdown{ display:grid; gap:10px; }
+.daily-card::after{
+  content:"";
+  position:absolute;
+  width:160px;
+  height:160px;
+  right:-70px;
+  top:-90px;
+  border-radius:50%;
+  background:rgba(244,180,26,.22);
+}
+
+.card-kicker{
+  position:relative;
+  z-index:1;
+  color:#D6E5FF;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.daily-card strong{
+  position:relative;
+  z-index:1;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:29px;
+  letter-spacing:-.02em;
+}
+
+.daily-card span:last-child{
+  position:relative;
+  z-index:1;
+  opacity:.85;
+  font-size:12px;
+}
+
+/* ================= BREAKDOWN ================= */
+
+.breakdown{
+  display:grid;
+  gap:10px;
+}
+
 .formula{
-  padding:14px 15px; background:var(--paper); border:1px solid var(--line);
+  padding:15px;
+  border:1px solid var(--line);
+  border-left:4px solid var(--gold);
   border-radius:var(--radius-s);
-  font-family:'IBM Plex Mono', monospace; font-size:12.5px; line-height:1.6;
-  overflow-wrap:anywhere; color:var(--ink);
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-size:12px;
+  line-height:1.65;
+  overflow-wrap:anywhere;
 }
+
 .formula-label{
-  display:block; color:var(--muted); font:600 10px/1.2 'IBM Plex Sans', sans-serif;
-  letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px;
+  display:block;
+  margin-bottom:6px;
+  color:var(--teal-dark);
+  font:700 10px/1.2 'IBM Plex Sans',sans-serif;
+  letter-spacing:.07em;
+  text-transform:uppercase;
 }
+
+/* ================= EXPORT ================= */
 
 .export-card{
-  display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:center;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:14px;
+  align-items:center;
   border-style:dashed;
+  border-color:#D2DCD7;
 }
+
+.export-icon,
+.modal-icon{
+  display:grid;
+  place-items:center;
+  border-radius:13px;
+  background:var(--gold-soft);
+  color:var(--gold-dark);
+  font-size:22px;
+  font-weight:800;
+}
+
 .export-icon{
-  width:44px; height:44px; border-radius:12px; display:grid; place-items:center;
-  background:var(--gold-soft); color:var(--gold); font-size:20px; font-weight:700;
+  width:46px;
+  height:46px;
 }
-.export-content h2{ margin:0 0 4px; font-size:15px; }
-.export-content p{ margin:0; color:var(--muted); font-size:12px; line-height:1.5; }
+
+.export-content h2{
+  margin:0 0 4px;
+  color:var(--navy);
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-size:16px;
+}
+
+.export-content p{
+  margin:0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
 .export-btn{
-  grid-column:1/-1; width:100%; min-height:46px; border:1px solid var(--gold);
-  border-radius:11px; background:var(--surface); color:var(--gold);
-  font-weight:600; transition:background .15s, color .15s;
+  grid-column:1/-1;
+  width:100%;
+  min-height:47px;
+  border:1.5px solid var(--gold);
+  border-radius:11px;
+  background:#fff;
+  color:var(--gold-dark);
+  font-weight:700;
+  transition:.15s ease;
 }
-.export-btn:hover{ background:var(--gold); color:#fff; }
+
+.export-btn:hover{
+  background:var(--gold);
+  color:#fff;
+}
+
+/* ================= FOOTER ================= */
 
 footer{
-  display:flex; justify-content:space-between; align-items:center; gap:12px;
-  padding:22px 4px 0; color:var(--faint); font-size:10.5px;
-  border-top:1px solid var(--line); margin-top:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:22px 4px 0;
+  margin-top:8px;
+  border-top:1px solid var(--line);
+  color:var(--faint);
+  font-size:10.5px;
 }
-footer strong{ color:var(--muted); font-weight:600; }
+
+footer strong{
+  color:var(--navy);
+  font-weight:800;
+}
+
+.footer-dot{
+  color:var(--gold-dark);
+  padding:0 3px;
+}
 
 /* ================= MODAL ================= */
 
 .modal-overlay{
-  position:fixed; inset:0; z-index:100; display:grid; place-items:center;
-  padding:20px; background:rgba(14,26,22,.55); backdrop-filter:blur(4px);
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:grid;
+  place-items:center;
+  padding:20px;
+  background:rgba(4,17,54,.62);
+  backdrop-filter:blur(5px);
   animation:modalFade .16s ease;
 }
-.modal-overlay[hidden]{ display:none; }
-@keyframes modalFade{ from{ opacity:0;} to{ opacity:1;} }
+
+.modal-overlay[hidden]{display:none}
+
+@keyframes modalFade{
+  from{opacity:0}
+  to{opacity:1}
+}
 
 .export-modal{
-  position:relative; width:min(100%, 400px); background:#fff;
-  border-radius:var(--radius-l); padding:28px;
-  box-shadow:0 30px 70px rgba(15,30,26,.28);
+  position:relative;
+  width:min(100%,410px);
+  padding:28px;
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:var(--radius-l);
+  background:#fff;
+  box-shadow:0 30px 75px rgba(3,14,45,.30);
   animation:modalUp .18s ease;
 }
-@keyframes modalUp{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:none;} }
+
+@keyframes modalUp{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:none}
+}
 
 .modal-close{
-  position:absolute; top:12px; right:14px; width:32px; height:32px; border:0;
-  border-radius:50%; background:var(--paper); color:var(--muted); font-size:20px; line-height:1;
+  position:absolute;
+  top:12px;
+  right:14px;
+  width:33px;
+  height:33px;
+  border:0;
+  border-radius:50%;
+  background:var(--paper);
+  color:var(--muted);
+  font-size:20px;
 }
-.modal-close:hover{ background:var(--line); }
+
+.modal-close:hover{
+  background:var(--gold-soft);
+  color:var(--gold-dark);
+}
 
 .modal-icon{
-  width:46px; height:46px; display:grid; place-items:center; border-radius:13px;
-  background:var(--gold-soft); color:var(--gold); font-size:22px; font-weight:700; margin-bottom:16px;
+  width:47px;
+  height:47px;
+  margin-bottom:16px;
 }
 
 .export-modal h2{
-  font-family:'IBM Plex Serif', serif; font-weight:600;
-  margin:6px 0 8px; font-size:21px;
+  margin:6px 0 8px;
+  color:var(--navy);
+  font-family:'IBM Plex Serif',Georgia,serif;
+  font-size:22px;
 }
-.export-modal > p{ margin:0 0 20px; color:var(--muted); font-size:13px; line-height:1.6; }
 
-.modal-field{ display:block; font-size:12px; font-weight:600; margin-bottom:6px; }
-.modal-field input{ margin-top:8px; text-transform:uppercase; letter-spacing:.06em; }
-.modal-error{ min-height:16px; display:block; color:var(--danger); font-size:11.5px; margin:4px 0 6px; }
+.export-modal > p{
+  margin:0 0 20px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6;
+}
 
-.modal-actions{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px; }
-.secondary-modal-btn, .primary-modal-btn{ min-height:46px; border-radius:11px; font-weight:600; }
-.secondary-modal-btn{ border:1px solid var(--line-strong); background:#fff; color:var(--teal-deep); }
-.primary-modal-btn{ border:0; background:var(--gold); color:#fff; }
-.primary-modal-btn:hover{ background:#8f691f; }
-.secondary-modal-btn:hover{ border-color:var(--teal); }
+.modal-field{
+  display:block;
+  margin-bottom:6px;
+  font-size:12px;
+  font-weight:700;
+}
 
-@media (max-width:560px){
-  .app-shell{ padding-left:14px; padding-right:14px; }
-  .card{ padding:17px; }
-  .export-modal{ padding:22px; }
-  footer{ flex-direction:column; align-items:flex-start; gap:4px; }
+.modal-field input{
+  margin-top:8px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-family:'IBM Plex Mono',monospace;
+}
+
+.modal-error{
+  display:block;
+  min-height:16px;
+  margin:4px 0 6px;
+  color:var(--danger);
+  font-size:11.5px;
+}
+
+.modal-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:6px;
+}
+
+.secondary-modal-btn,
+.primary-modal-btn{
+  min-height:47px;
+  border-radius:11px;
+  font-weight:700;
+}
+
+.secondary-modal-btn{
+  border:1.5px solid var(--line-strong);
+  background:#fff;
+  color:var(--navy);
+}
+
+.secondary-modal-btn:hover{
+  border-color:var(--navy);
+  background:#F3F6FF;
+}
+
+.primary-modal-btn{
+  border:0;
+  background:var(--gold);
+  color:#fff;
+}
+
+.primary-modal-btn:hover{
+  background:var(--gold-dark);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:560px){
+  .app-shell{
+    padding-left:14px;
+    padding-right:14px;
+  }
+
+  .topbar{
+    min-height:82px;
+  }
+
+  .brand-mark{
+    width:52px;
+    height:52px;
+    flex-basis:52px;
+  }
+
+  .brand-text strong{
+    font-size:19px;
+  }
+
+  .brand-text small{
+    font-size:10px;
+  }
+
+  .install-btn{
+    padding:8px 10px;
+    font-size:11px;
+  }
+
+  .card{
+    padding:18px;
+  }
+
+  .hero{
+    padding-top:29px;
+  }
+
+  .compound-input{
+    gap:6px;
+  }
+
+  .export-modal{
+    padding:22px;
+  }
+
+  footer{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:4px;
+  }
+}
+
+@media(max-width:380px){
+  .brand-text small{
+    display:none;
+  }
+
+  .install-btn{
+    padding:7px 9px;
+  }
+
+  .card{
+    padding:16px;
+  }
+
+  .dose-result{
+    font-size:50px;
+  }
 }
 </style>
 </head>
@@ -476,191 +964,334 @@ footer strong{ color:var(--muted); font-weight:600; }
 <body>
 <div class="app-shell">
 
+  <!-- ================= HEADER ================= -->
   <header class="topbar">
     <div class="brand">
       <div class="brand-mark" aria-hidden="true">
-        <img src="logo.png" alt="MUPSA">
+        <!-- Put your MUPSA logo in the same folder and name it logo.png -->
+        <img src="logo.png" alt="MUPSA logo">
       </div>
+
       <div class="brand-text">
-        <strong>MEDIDOSE</strong>
-        <span>Dose &amp; volume calculator</span>
+        <strong>MEDI<span>DOSE</span></strong>
+        <small>Dose &amp; volume calculator</small>
       </div>
     </div>
-    <button id="installBtn" class="install-btn" type="button" hidden>Install app</button>
+
+    <button id="installBtn" class="install-btn" type="button" hidden>
+      Install app
+    </button>
   </header>
 
+  <!-- iOS installation message
   <div id="iosInstallTip" class="ios-tip" hidden>
-    <span>Install MEDIDOSE: tap <strong>Share</strong> <svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L3 3.5h2.2v6h2.6v-6H10L6.5 0z" fill="currentColor"/><rect x="0.5" y="6" width="12" height="9.5" rx="1.5" stroke="currentColor"/></svg> then <strong>Add to Home Screen</strong>.</span>
+    <span>
+      Install MEDIDOSE: tap <strong>Share</strong> then
+      <strong>Add to Home Screen</strong>.
+    </span>
     <button id="dismissIosTip" type="button" aria-label="Dismiss">&times;</button>
-  </div>
+  </div> -->
 
   <main>
 
-    <!-- SCREEN 1 — INPUT -->
+    <!-- ================= INPUT SCREEN ================= -->
     <section id="inputScreen" class="screen active" aria-labelledby="inputTitle">
 
+      <div class="hero">
+        <h1 id="inputTitle">Dose calculator for <em>safer</em> medication administration.</h1>
+        
+      </div>
 
       <form id="doseForm" novalidate>
         <div class="card">
 
           <div class="section-heading">
             <h2>Dose details</h2>
+            
           </div>
 
           <div class="segmented" role="tablist" aria-label="Dose type">
-            <button type="button" id="tabFixed" class="active" role="tab" aria-selected="true">Fixed dose</button>
-            <button type="button" id="tabWeight" role="tab" aria-selected="false">Weight-based</button>
+            <button type="button" id="tabFixed" class="active" role="tab" aria-selected="true">
+              Fixed dose
+            </button>
+            <button type="button" id="tabWeight" role="tab" aria-selected="false">
+              Weight-based
+            </button>
           </div>
+
           <input type="hidden" id="doseType" value="fixed">
 
+          <!-- Available concentration -->
           <div class="field">
             <span class="label-row">
               <span>Available concentration</span>
               <span class="required-tag">Required</span>
             </span>
+
             <div class="compound-input">
               <div>
-                <input id="availableMg" type="number" inputmode="decimal" min="0" step="any" placeholder="125" aria-describedby="availableMgError">
+                <input
+                  id="availableMg"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="any"
+                  placeholder="125"
+                  aria-label="Available milligrams"
+                  aria-describedby="availableMgError">
                 <span>mg</span>
               </div>
+
               <b>/</b>
+
               <div>
-                <input id="availableMl" type="number" inputmode="decimal" min="0" step="any" placeholder="5" aria-describedby="availableMlError">
+                <input
+                  id="availableMl"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="any"
+                  placeholder="5"
+                  aria-label="Available millilitres"
+                  aria-describedby="availableMlError">
                 <span>mL</span>
               </div>
             </div>
+
             <div class="error-pair">
               <small id="availableMgError" class="error"></small>
               <small id="availableMlError" class="error"></small>
             </div>
-            <small class="hint">Example: 125 mg per 5 mL</small>
+
+            <!-- <small class="hint">Example: 125 mg per 5 mL</small> -->
           </div>
 
+          <!-- Fixed dose -->
           <div id="fixedField" class="mode-field">
             <label class="field">
-              <span class="label-row"><span>Required dose</span></span>
+              <span class="label-row">
+                <span>Required dose</span>
+              </span>
+
               <div class="unit-input">
-                <input id="requiredDose" type="number" inputmode="decimal" min="0" step="any" placeholder="250" aria-describedby="requiredDoseError">
+                <input
+                  id="requiredDose"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="any"
+                  placeholder="250"
+                  aria-describedby="requiredDoseError">
                 <span>mg</span>
               </div>
+
               <small id="requiredDoseError" class="error"></small>
             </label>
           </div>
 
+          <!-- Weight based -->
           <div id="weightField" class="mode-field" hidden>
+
             <label class="field">
-              <span class="label-row"><span>Dose per kg</span></span>
+              <span class="label-row">
+                <span>Dose per kg</span>
+              </span>
+
               <div class="unit-input">
-                <input id="dosePerKg" type="number" inputmode="decimal" min="0" step="any" placeholder="10" aria-describedby="dosePerKgError">
+                <input
+                  id="dosePerKg"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="any"
+                  placeholder="10"
+                  aria-describedby="dosePerKgError">
                 <span>mg/kg</span>
               </div>
+
               <small id="dosePerKgError" class="error"></small>
             </label>
+
             <label class="field">
-              <span class="label-row"><span>Patient weight</span></span>
+              <span class="label-row">
+                <span>Patient weight</span>
+              </span>
+
               <div class="unit-input">
-                <input id="patientWeight" type="number" inputmode="decimal" min="0" step="any" placeholder="20" aria-describedby="patientWeightError">
+                <input
+                  id="patientWeight"
+                  type="number"
+                  inputmode="decimal"
+                  min="0"
+                  step="any"
+                  placeholder="20"
+                  aria-describedby="patientWeightError">
                 <span>kg</span>
               </div>
+
               <small id="patientWeightError" class="error"></small>
             </label>
+
           </div>
 
+          <!-- Frequency -->
           <label class="field">
             <span class="label-row">
               <span>Frequency</span>
               <span class="optional-tag">Optional</span>
             </span>
+
             <div class="unit-input">
-              <input id="frequency" type="number" inputmode="numeric" min="0" step="1" max="24" placeholder="3" aria-describedby="frequencyError">
+              <input
+                id="frequency"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                step="1"
+                max="24"
+                placeholder="3"
+                aria-describedby="frequencyError">
               <span>times/day</span>
             </div>
+
             <small id="frequencyError" class="error"></small>
             <small id="frequencyWarning" class="warning" hidden></small>
           </label>
 
-          <button id="calculateBtn" class="primary-btn" type="submit" disabled>Calculate</button>
+          <button id="calculateBtn" class="primary-btn" type="submit" disabled>
+            Calculate dose
+          </button>
+
         </div>
       </form>
 
       <!-- <aside class="safety-note">
         <span class="shield" aria-hidden="true">&#10003;</span>
-        <p><strong>Safety note.</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
+        <p>
+          <strong>Safety note.</strong>
+          MEDIDOSE performs arithmetic only. Always verify the result against
+          the prescription and follow your clinical protocols.
+        </p>
       </aside> -->
 
     </section>
 
-    <!-- SCREEN 2 — RESULT -->
+    <!-- ================= RESULT SCREEN ================= -->
     <section id="resultScreen" class="screen" aria-labelledby="resultTitle" hidden>
 
       <div class="result-hero">
         <h1 id="resultTitle">Volume to administer</h1>
+
         <div class="dose-result">
           <span id="volumeResult">0.00</span>
           <small>mL</small>
         </div>
+
         <p id="resultSummary"></p>
       </div>
 
+      <!-- Daily volume -->
       <div id="dailyCard" class="card daily-card" hidden>
         <span class="card-kicker">Total daily volume</span>
         <strong id="dailyResult">0.00 mL</strong>
         <span id="dailyFrequency">Frequency: 0 times daily</span>
       </div>
 
+      <!-- Breakdown -->
       <div class="card breakdown-card">
         <div class="section-heading">
           <h2>Calculation breakdown</h2>
+          <!-- <p>Review the arithmetic used to reach the final volume.</p> -->
         </div>
+
         <div id="breakdown" class="breakdown"></div>
       </div>
 
+      <!-- Export -->
       <div class="card export-card">
-        <div class="export-icon">&#8595;</div>
+        <div class="export-icon" aria-hidden="true">&#8595;</div>
+
         <div class="export-content">
           <h2>Export calculation</h2>
-          <p>Save this working as a CSV file for the patient record.</p>
+          <!-- <p>Save this working as a CSV file for the patient record.</p> -->
         </div>
-        <button id="exportBtn" class="export-btn" type="button">Export details</button>
+
+        <button id="exportBtn" class="export-btn" type="button">
+          Export details
+        </button>
       </div>
 
-      <button id="editBtn" class="secondary-btn" type="button">&larr; Back / edit</button>
+      <button id="editBtn" class="secondary-btn" type="button">
+        &larr; Back / edit
+      </button>
 
-      <!-- <aside class="safety-note">
+      <aside class="safety-note">
         <span class="shield" aria-hidden="true">&#10003;</span>
-        <p><strong>Safety note.</strong> MEDIDOSE performs the arithmetic only. Always verify against the prescription and consult a healthcare professional before administering any medication.</p>
-      </aside> -->
+        <p>
+          <strong>Safety note.</strong>
+          Confirm the calculation and prescription before administering medication.
+        </p>
+      </aside>
 
     </section>
 
   </main>
 
   <footer>
-    <span><strong>MEDIDOSE</strong> by MUPSA</span>
-    <!-- <span>Arithmetic only &middot; No drug database &middot; No dose suggestions</span> -->
+    <span><strong>MEDIDOSE</strong><span class="footer-dot">·</span>by MUPSA</span>
+    <span>Safe Doses. Better Care.</span>
   </footer>
 
 </div>
 
-<!-- EXPORT MODAL -->
+<!-- ================= EXPORT MODAL ================= -->
 <div id="exportModal" class="modal-overlay" hidden>
   <div class="export-modal" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
-    <button id="closeExportModal" class="modal-close" type="button" aria-label="Close export dialog">&times;</button>
-    <div class="modal-icon">&#8595;</div>
+
+    <button
+      id="closeExportModal"
+      class="modal-close"
+      type="button"
+      aria-label="Close export dialog">&times;</button>
+
+    <div class="modal-icon" aria-hidden="true">&#8595;</div>
+
     <h2 id="exportModalTitle">Record reviewer initials</h2>
-    <!-- <p>Add the initials of the person reviewing this calculation. They're included in the exported file for the patient record.</p> -->
-    <label class="modal-field" for="exportCode">Reviewer initials</label>
-    <input id="exportCode" type="text" autocomplete="off" maxlength="6" placeholder="e.g. JM">
+
+    <!-- <p>
+      Add the initials of the person reviewing this calculation.
+      They will be included in the exported CSV.
+    </p> -->
+
+    <label class="modal-field" for="exportCode">
+      Reviewer initials
+    </label>
+
+    <input
+      id="exportCode"
+      type="text"
+      autocomplete="off"
+      maxlength="6"
+      placeholder="e.g. JM">
+
     <small id="exportCodeError" class="modal-error"></small>
+
     <div class="modal-actions">
-      <button id="cancelExportBtn" class="secondary-modal-btn" type="button">Cancel</button>
-      <button id="confirmExportBtn" class="primary-modal-btn" type="button">Download CSV</button>
+      <button id="cancelExportBtn" class="secondary-modal-btn" type="button">
+        Cancel
+      </button>
+
+      <button id="confirmExportBtn" class="primary-modal-btn" type="button">
+        Download CSV
+      </button>
     </div>
+
   </div>
 </div>
 
 <script>
 (function(){
+
   var doseType = 'fixed';
   var lastCalc = null;
 
@@ -670,23 +1301,30 @@ footer strong{ color:var(--muted); font-weight:600; }
     doseTypeInput: document.getElementById('doseType'),
     fixedField: document.getElementById('fixedField'),
     weightField: document.getElementById('weightField'),
+
     availableMg: document.getElementById('availableMg'),
     availableMl: document.getElementById('availableMl'),
     requiredDose: document.getElementById('requiredDose'),
     dosePerKg: document.getElementById('dosePerKg'),
     patientWeight: document.getElementById('patientWeight'),
     frequency: document.getElementById('frequency'),
+
     calculateBtn: document.getElementById('calculateBtn'),
     form: document.getElementById('doseForm'),
+
     inputScreen: document.getElementById('inputScreen'),
     resultScreen: document.getElementById('resultScreen'),
+
     volumeResult: document.getElementById('volumeResult'),
     resultSummary: document.getElementById('resultSummary'),
+
     dailyCard: document.getElementById('dailyCard'),
     dailyResult: document.getElementById('dailyResult'),
     dailyFrequency: document.getElementById('dailyFrequency'),
+
     breakdown: document.getElementById('breakdown'),
     editBtn: document.getElementById('editBtn'),
+
     exportBtn: document.getElementById('exportBtn'),
     exportModal: document.getElementById('exportModal'),
     closeExportModal: document.getElementById('closeExportModal'),
@@ -694,24 +1332,35 @@ footer strong{ color:var(--muted); font-weight:600; }
     confirmExportBtn: document.getElementById('confirmExportBtn'),
     exportCode: document.getElementById('exportCode'),
     exportCodeError: document.getElementById('exportCodeError'),
+
     frequencyWarning: document.getElementById('frequencyWarning')
   };
 
   function setDoseType(type){
     doseType = type;
     els.doseTypeInput.value = type;
+
     var isFixed = type === 'fixed';
+
     els.tabFixed.classList.toggle('active', isFixed);
     els.tabWeight.classList.toggle('active', !isFixed);
+
     els.tabFixed.setAttribute('aria-selected', isFixed);
     els.tabWeight.setAttribute('aria-selected', !isFixed);
+
     els.fixedField.hidden = !isFixed;
     els.weightField.hidden = isFixed;
+
     validate();
   }
 
-  els.tabFixed.addEventListener('click', function(){ setDoseType('fixed'); });
-  els.tabWeight.addEventListener('click', function(){ setDoseType('weight'); });
+  els.tabFixed.addEventListener('click', function(){
+    setDoseType('fixed');
+  });
+
+  els.tabWeight.addEventListener('click', function(){
+    setDoseType('weight');
+  });
 
   function num(el){
     var v = parseFloat(el.value);
@@ -719,264 +1368,507 @@ footer strong{ color:var(--muted); font-weight:600; }
   }
 
   function setError(inputEl, errorEl, message){
-    if (message){
+    if(message){
       inputEl.classList.add('invalid');
       errorEl.textContent = message;
-    } else {
+    }else{
       inputEl.classList.remove('invalid');
       errorEl.textContent = '';
     }
   }
 
   function validate(){
+
     var mg = num(els.availableMg);
     var ml = num(els.availableMl);
     var ok = true;
 
-    setError(els.availableMg, document.getElementById('availableMgError'), (els.availableMg.value !== '' && (mg === null || mg <= 0)) ? 'Enter a positive number' : '');
-    setError(els.availableMl, document.getElementById('availableMlError'), (els.availableMl.value !== '' && (ml === null || ml <= 0)) ? 'Enter a positive number' : '');
-    if (mg === null || mg <= 0 || ml === null || ml <= 0) ok = false;
+    setError(
+      els.availableMg,
+      document.getElementById('availableMgError'),
+      (els.availableMg.value !== '' && (mg === null || mg <= 0))
+        ? 'Enter a positive number'
+        : ''
+    );
 
-    if (doseType === 'fixed'){
+    setError(
+      els.availableMl,
+      document.getElementById('availableMlError'),
+      (els.availableMl.value !== '' && (ml === null || ml <= 0))
+        ? 'Enter a positive number'
+        : ''
+    );
+
+    if(mg === null || mg <= 0 || ml === null || ml <= 0){
+      ok = false;
+    }
+
+    if(doseType === 'fixed'){
+
       var dose = num(els.requiredDose);
-      setError(els.requiredDose, document.getElementById('requiredDoseError'), (els.requiredDose.value !== '' && (dose === null || dose <= 0)) ? 'Enter a positive number' : '');
-      if (dose === null || dose <= 0) ok = false;
-    } else {
+
+      setError(
+        els.requiredDose,
+        document.getElementById('requiredDoseError'),
+        (els.requiredDose.value !== '' && (dose === null || dose <= 0))
+          ? 'Enter a positive number'
+          : ''
+      );
+
+      if(dose === null || dose <= 0){
+        ok = false;
+      }
+
+    }else{
+
       var perKg = num(els.dosePerKg);
       var weight = num(els.patientWeight);
-      setError(els.dosePerKg, document.getElementById('dosePerKgError'), (els.dosePerKg.value !== '' && (perKg === null || perKg <= 0)) ? 'Enter a positive number' : '');
-      setError(els.patientWeight, document.getElementById('patientWeightError'), (els.patientWeight.value !== '' && (weight === null || weight <= 0)) ? 'Enter a positive number' : '');
-      if (perKg === null || perKg <= 0 || weight === null || weight <= 0) ok = false;
+
+      setError(
+        els.dosePerKg,
+        document.getElementById('dosePerKgError'),
+        (els.dosePerKg.value !== '' && (perKg === null || perKg <= 0))
+          ? 'Enter a positive number'
+          : ''
+      );
+
+      setError(
+        els.patientWeight,
+        document.getElementById('patientWeightError'),
+        (els.patientWeight.value !== '' && (weight === null || weight <= 0))
+          ? 'Enter a positive number'
+          : ''
+      );
+
+      if(perKg === null || perKg <= 0 || weight === null || weight <= 0){
+        ok = false;
+      }
     }
 
     var freq = num(els.frequency);
     var freqErrEl = document.getElementById('frequencyError');
-    if (els.frequency.value !== '' && (freq === null || freq < 0 || freq > 24)){
-      setError(els.frequency, freqErrEl, 'Enter a value between 0 and 24');
+
+    if(
+      els.frequency.value !== '' &&
+      (freq === null || freq < 0 || freq > 24)
+    ){
+      setError(
+        els.frequency,
+        freqErrEl,
+        'Enter a value between 0 and 24'
+      );
       ok = false;
-    } else {
+    }else{
       setError(els.frequency, freqErrEl, '');
     }
 
-    if (freq !== null && freq > 6){
+    if(freq !== null && freq > 6){
       els.frequencyWarning.hidden = false;
-      els.frequencyWarning.textContent = 'Unusually high frequency — double-check against the prescription.';
-    } else {
+      els.frequencyWarning.textContent =
+        'Unusually high frequency — double-check against the prescription.';
+    }else{
       els.frequencyWarning.hidden = true;
     }
 
     els.calculateBtn.disabled = !ok;
+
     return ok;
   }
 
-  [els.availableMg, els.availableMl, els.requiredDose, els.dosePerKg, els.patientWeight, els.frequency]
-    .forEach(function(el){ el.addEventListener('input', validate); });
+  [
+    els.availableMg,
+    els.availableMl,
+    els.requiredDose,
+    els.dosePerKg,
+    els.patientWeight,
+    els.frequency
+  ].forEach(function(el){
+    el.addEventListener('input', validate);
+  });
 
   function fmt(n){
     return (Math.round(n * 100) / 100).toFixed(2);
   }
 
   els.form.addEventListener('submit', function(e){
+
     e.preventDefault();
-    if (!validate()) return;
+
+    if(!validate()) return;
 
     var mg = num(els.availableMg);
     var ml = num(els.availableMl);
-    var concentration = mg / ml; // mg per mL
-    var freq = num(els.frequency);
-    var breakdown = [];
-    var totalDoseMg, volume;
 
-    if (doseType === 'fixed'){
+    var concentration = mg / ml;
+    var freq = num(els.frequency);
+
+    var breakdown = [];
+    var totalDoseMg;
+    var volume;
+
+    if(doseType === 'fixed'){
+
       totalDoseMg = num(els.requiredDose);
       volume = totalDoseMg / concentration;
+
       breakdown.push({
-        label: 'Volume',
-        text: 'Volume (mL) = Required dose \u00f7 Concentration\n= ' + totalDoseMg + ' mg \u00f7 (' + mg + ' mg / ' + ml + ' mL)\n= ' + fmt(volume) + ' mL'
+        label:'Volume',
+        text:
+          'Volume (mL) = Required dose ÷ Concentration\n' +
+          '= ' + totalDoseMg + ' mg ÷ (' +
+          mg + ' mg / ' + ml + ' mL)\n' +
+          '= ' + fmt(volume) + ' mL'
       });
-    } else {
+
+    }else{
+
       var perKg = num(els.dosePerKg);
       var weight = num(els.patientWeight);
+
       totalDoseMg = perKg * weight;
       volume = totalDoseMg / concentration;
+
       breakdown.push({
-        label: 'Total dose',
-        text: 'Total dose (mg) = Dose per kg \u00d7 Weight\n= ' + perKg + ' mg/kg \u00d7 ' + weight + ' kg\n= ' + fmt(totalDoseMg) + ' mg'
+        label:'Total dose',
+        text:
+          'Total dose (mg) = Dose per kg × Weight\n' +
+          '= ' + perKg + ' mg/kg × ' + weight + ' kg\n' +
+          '= ' + fmt(totalDoseMg) + ' mg'
       });
+
       breakdown.push({
-        label: 'Volume',
-        text: 'Volume (mL) = Total dose \u00f7 Concentration\n= ' + fmt(totalDoseMg) + ' mg \u00f7 (' + mg + ' mg / ' + ml + ' mL)\n= ' + fmt(volume) + ' mL'
+        label:'Volume',
+        text:
+          'Volume (mL) = Total dose ÷ Concentration\n' +
+          '= ' + fmt(totalDoseMg) + ' mg ÷ (' +
+          mg + ' mg / ' + ml + ' mL)\n' +
+          '= ' + fmt(volume) + ' mL'
       });
     }
 
     var dailyVolume = null;
-    if (freq !== null && freq > 0){
+
+    if(freq !== null && freq > 0){
+
       dailyVolume = volume * freq;
+
       breakdown.push({
-        label: 'Daily total',
-        text: 'Daily volume (mL) = Volume per dose \u00d7 Frequency\n= ' + fmt(volume) + ' mL \u00d7 ' + freq + '\n= ' + fmt(dailyVolume) + ' mL/day'
+        label:'Daily total',
+        text:
+          'Daily volume (mL) = Volume per dose × Frequency\n' +
+          '= ' + fmt(volume) + ' mL × ' + freq + '\n' +
+          '= ' + fmt(dailyVolume) + ' mL/day'
       });
     }
 
+    /* Final result */
     els.volumeResult.textContent = fmt(volume);
+
     var doseResultEl = els.volumeResult.closest('.dose-result');
+
     doseResultEl.classList.remove('pop');
     void doseResultEl.offsetWidth;
     doseResultEl.classList.add('pop');
-    els.resultSummary.textContent = doseType === 'fixed'
-      ? 'Draw up ' + fmt(volume) + ' mL to deliver ' + totalDoseMg + ' mg per dose.'
-      : 'Draw up ' + fmt(volume) + ' mL to deliver ' + fmt(totalDoseMg) + ' mg per dose.';
 
-    if (dailyVolume !== null){
+    els.resultSummary.textContent =
+      doseType === 'fixed'
+        ? 'Draw up ' + fmt(volume) + ' mL to deliver ' +
+          totalDoseMg + ' mg per dose.'
+        : 'Draw up ' + fmt(volume) + ' mL to deliver ' +
+          fmt(totalDoseMg) + ' mg per dose.';
+
+    if(dailyVolume !== null){
+
       els.dailyCard.hidden = false;
       els.dailyResult.textContent = fmt(dailyVolume) + ' mL';
-      els.dailyFrequency.textContent = 'Frequency: ' + freq + ' times daily';
-    } else {
+      els.dailyFrequency.textContent =
+        'Frequency: ' + freq + ' times daily';
+
+    }else{
       els.dailyCard.hidden = true;
     }
 
+    /* Calculation breakdown */
     els.breakdown.innerHTML = '';
+
     breakdown.forEach(function(item){
+
       var div = document.createElement('div');
       div.className = 'formula';
+
       var label = document.createElement('span');
       label.className = 'formula-label';
       label.textContent = item.label;
+
       div.appendChild(label);
       div.appendChild(document.createTextNode(item.text));
+
       div.style.whiteSpace = 'pre-line';
+
       els.breakdown.appendChild(div);
     });
 
     lastCalc = {
-      doseType: doseType,
-      availableMg: mg, availableMl: ml,
-      requiredDose: doseType === 'fixed' ? totalDoseMg : null,
-      dosePerKg: doseType === 'weight' ? num(els.dosePerKg) : null,
-      patientWeight: doseType === 'weight' ? num(els.patientWeight) : null,
-      totalDoseMg: totalDoseMg,
-      volume: volume,
-      frequency: freq,
-      dailyVolume: dailyVolume
+      doseType:doseType,
+      availableMg:mg,
+      availableMl:ml,
+      requiredDose:doseType === 'fixed' ? totalDoseMg : null,
+      dosePerKg:doseType === 'weight' ? num(els.dosePerKg) : null,
+      patientWeight:doseType === 'weight' ? num(els.patientWeight) : null,
+      totalDoseMg:totalDoseMg,
+      volume:volume,
+      frequency:freq,
+      dailyVolume:dailyVolume
     };
 
     els.inputScreen.hidden = true;
     els.resultScreen.hidden = false;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    window.scrollTo({
+      top:0,
+      behavior:'smooth'
+    });
   });
 
   els.editBtn.addEventListener('click', function(){
+
     els.resultScreen.hidden = true;
     els.inputScreen.hidden = false;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    window.scrollTo({
+      top:0,
+      behavior:'smooth'
+    });
   });
 
+  /* ================= EXPORT ================= */
+
   function openModal(){
+
     els.exportCode.value = '';
     els.exportCodeError.textContent = '';
     els.exportModal.hidden = false;
-    setTimeout(function(){ els.exportCode.focus(); }, 30);
+
+    setTimeout(function(){
+      els.exportCode.focus();
+    },30);
   }
-  function closeModal(){ els.exportModal.hidden = true; }
+
+  function closeModal(){
+    els.exportModal.hidden = true;
+  }
 
   els.exportBtn.addEventListener('click', openModal);
   els.closeExportModal.addEventListener('click', closeModal);
   els.cancelExportBtn.addEventListener('click', closeModal);
-  els.exportModal.addEventListener('click', function(e){ if (e.target === els.exportModal) closeModal(); });
+
+  els.exportModal.addEventListener('click', function(e){
+    if(e.target === els.exportModal){
+      closeModal();
+    }
+  });
 
   els.confirmExportBtn.addEventListener('click', function(){
+
     var initials = els.exportCode.value.trim();
-    if (!initials){
-      els.exportCodeError.textContent = 'Enter reviewer initials to continue.';
+
+    if(!initials){
+      els.exportCodeError.textContent =
+        'Enter reviewer initials to continue.';
       return;
     }
-    if (!lastCalc) { closeModal(); return; }
+
+    if(!lastCalc){
+      closeModal();
+      return;
+    }
 
     var rows = [
-      ['Field', 'Value'],
-      ['Dose type', lastCalc.doseType === 'fixed' ? 'Fixed dose' : 'Weight-based'],
-      ['Available concentration', lastCalc.availableMg + ' mg / ' + lastCalc.availableMl + ' mL']
+      ['Field','Value'],
+      [
+        'Dose type',
+        lastCalc.doseType === 'fixed'
+          ? 'Fixed dose'
+          : 'Weight-based'
+      ],
+      [
+        'Available concentration',
+        lastCalc.availableMg + ' mg / ' +
+        lastCalc.availableMl + ' mL'
+      ]
     ];
-    if (lastCalc.doseType === 'fixed'){
-      rows.push(['Required dose', lastCalc.requiredDose + ' mg']);
-    } else {
-      rows.push(['Dose per kg', lastCalc.dosePerKg + ' mg/kg']);
-      rows.push(['Patient weight', lastCalc.patientWeight + ' kg']);
-      rows.push(['Total dose', fmt(lastCalc.totalDoseMg) + ' mg']);
-    }
-    rows.push(['Volume per dose', fmt(lastCalc.volume) + ' mL']);
-    if (lastCalc.frequency){
-      rows.push(['Frequency', lastCalc.frequency + ' times/day']);
-      rows.push(['Total daily volume', fmt(lastCalc.dailyVolume) + ' mL']);
-    }
-    rows.push(['Reviewed by', initials.toUpperCase()]);
-    rows.push(['Exported', new Date().toLocaleString()]);
 
-    var csv = rows.map(function(r){
-      return r.map(function(cell){
-        var s = String(cell).replace(/"/g, '""');
-        return /[",\n]/.test(s) ? '"' + s + '"' : s;
+    if(lastCalc.doseType === 'fixed'){
+
+      rows.push([
+        'Required dose',
+        lastCalc.requiredDose + ' mg'
+      ]);
+
+    }else{
+
+      rows.push([
+        'Dose per kg',
+        lastCalc.dosePerKg + ' mg/kg'
+      ]);
+
+      rows.push([
+        'Patient weight',
+        lastCalc.patientWeight + ' kg'
+      ]);
+
+      rows.push([
+        'Total dose',
+        fmt(lastCalc.totalDoseMg) + ' mg'
+      ]);
+    }
+
+    rows.push([
+      'Volume per dose',
+      fmt(lastCalc.volume) + ' mL'
+    ]);
+
+    if(lastCalc.frequency){
+
+      rows.push([
+        'Frequency',
+        lastCalc.frequency + ' times/day'
+      ]);
+
+      rows.push([
+        'Total daily volume',
+        fmt(lastCalc.dailyVolume) + ' mL'
+      ]);
+    }
+
+    rows.push([
+      'Reviewed by',
+      initials.toUpperCase()
+    ]);
+
+    rows.push([
+      'Exported',
+      new Date().toLocaleString()
+    ]);
+
+    var csv = rows.map(function(row){
+
+      return row.map(function(cell){
+
+        var s = String(cell).replace(/"/g,'""');
+
+        return /[",\n]/.test(s)
+          ? '"' + s + '"'
+          : s;
+
       }).join(',');
+
     }).join('\n');
 
-    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var blob = new Blob(
+      [csv],
+      {type:'text/csv;charset=utf-8;'}
+    );
+
     var url = URL.createObjectURL(blob);
+
     var a = document.createElement('a');
+
     a.href = url;
     a.download = 'medidose-calculation.csv';
+
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+
     URL.revokeObjectURL(url);
 
     closeModal();
   });
 
+  /* ================= PWA INSTALL ================= */
+
   validate();
 
-  // ---- PWA install handling ----
   var installBtn = document.getElementById('installBtn');
   var deferredPrompt = null;
 
   window.addEventListener('beforeinstallprompt', function(e){
+
     e.preventDefault();
     deferredPrompt = e;
     installBtn.hidden = false;
+
   });
 
   installBtn.addEventListener('click', function(){
-    if (!deferredPrompt) return;
+
+    if(!deferredPrompt) return;
+
     installBtn.hidden = true;
+
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.finally(function(){ deferredPrompt = null; });
+
+    deferredPrompt.userChoice.finally(function(){
+      deferredPrompt = null;
+    });
   });
 
   window.addEventListener('appinstalled', function(){
+
     installBtn.hidden = true;
     deferredPrompt = null;
+
   });
 
-  // iOS Safari has no beforeinstallprompt — show a manual tip instead.
+  /* ================= iOS INSTALL ================= */
+
   var isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+  var isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
   var iosTip = document.getElementById('iosInstallTip');
   var dismissIosTip = document.getElementById('dismissIosTip');
 
-  if (isIos && !isStandalone && !localStorage.getItem('medidose_ios_tip_dismissed')){
+  if(
+    isIos &&
+    !isStandalone &&
+    !localStorage.getItem('medidose_ios_tip_dismissed')
+  ){
     iosTip.hidden = false;
   }
+
   dismissIosTip.addEventListener('click', function(){
+
     iosTip.hidden = true;
-    try { localStorage.setItem('medidose_ios_tip_dismissed', '1'); } catch(e){}
+
+    try{
+      localStorage.setItem(
+        'medidose_ios_tip_dismissed',
+        '1'
+      );
+    }catch(e){}
   });
 
-  // ---- Service worker (offline support + installability) ----
-  if ('serviceWorker' in navigator){
+  /* ================= SERVICE WORKER ================= */
+
+  if('serviceWorker' in navigator){
+
     window.addEventListener('load', function(){
-      navigator.serviceWorker.register('sw.js').catch(function(){ /* ignore */ });
+
+      navigator.serviceWorker
+        .register('sw.js')
+        .catch(function(){
+          /* Offline support is optional */
+        });
+
     });
   }
+
 })();
 </script>
+
 </body>
 </html>
