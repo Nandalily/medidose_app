@@ -12,8 +12,8 @@
 <link rel="icon" href="icon-192.png" type="image/png">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap');
-
+/* @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&family=Roboto+Mono:wght@500;600;700&display=swap');
 :root{
   /* MUPSA / logo palette */
   --navy:#07216B;
@@ -222,7 +222,7 @@ button:disabled{cursor:not-allowed}
   max-width:26ch;
   font-family:'IBM Plex Serif',Georgia,serif;
   font-weight:700;
-  font-size:clamp(29px,7vw,40px);
+  font-size:clamp(20px,5vw,25px);
   line-height:1.1;
   letter-spacing:-.025em;
   color:var(--navy);
@@ -418,7 +418,7 @@ input.invalid{
 
 .compound-input b{
   color:var(--gold-dark);
-  font-family:'IBM Plex Mono',monospace;
+  font-family:'IBM Plex Sans',sans-serif;
   font-weight:700;
 }
 
@@ -555,7 +555,7 @@ input.invalid{
   align-items:baseline;
   gap:8px;
   color:var(--navy);
-  font-family:'IBM Plex Mono',ui-monospace,monospace;
+ font-family:'IBM Plex Sans',sans-serif;
   font-size:clamp(54px,16vw,82px);
   font-weight:700;
   letter-spacing:-.045em;
@@ -632,7 +632,7 @@ input.invalid{
 .daily-card strong{
   position:relative;
   z-index:1;
-  font-family:'IBM Plex Mono',monospace;
+  font-family:'IBM Plex Sans',sans-serif;
   font-size:29px;
   letter-spacing:-.02em;
 }
@@ -658,7 +658,7 @@ input.invalid{
   border-radius:var(--radius-s);
   background:var(--paper);
   color:var(--ink);
-  font-family:'IBM Plex Mono',ui-monospace,monospace;
+  font-family:'IBM Plex Sans',sans-serif;
   font-size:12px;
   line-height:1.65;
   overflow-wrap:anywhere;
@@ -841,7 +841,7 @@ footer strong{
   margin-top:8px;
   text-transform:uppercase;
   letter-spacing:.08em;
-  font-family:'IBM Plex Mono',monospace;
+  font-family:'IBM Plex Sans',sans-serif;
 }
 
 .modal-error{
@@ -998,7 +998,7 @@ footer strong{
     <section id="inputScreen" class="screen active" aria-labelledby="inputTitle">
 
       <div class="hero">
-        <h1 id="inputTitle">Dose calculator for <em>safer</em> medication administration.</h1>
+        <h1 class="welcome" id="inputTitle">MediDose  <em>Calculator</em></h1>
         
       </div>
 
